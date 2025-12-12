@@ -41,8 +41,9 @@ class CharacterWindow: NSWindow {
         // 다른 앱이 활성화되어도 창 유지
         self.hidesOnDeactivate = false
 
-        // 창이 키 윈도우가 되는 것을 허용
-        self.isMovableByWindowBackground = false
+        // 윈도우 이동 가능하게 설정 (네이티브 드래그 사용)
+        self.isMovable = true
+        self.isMovableByWindowBackground = true
 
         // 화면 제약 해제 - 메뉴바 위로 이동 가능하도록
         self.styleMask.insert(.fullSizeContentView)
@@ -67,6 +68,11 @@ class CharacterWindow: NSWindow {
         self.characterType = type
         setupContent()
     }
+
+    /// 화면 제약 완전히 해제 - 메뉴바 위로도 이동 가능
+    override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
+        return frameRect // 제약 없이 그대로 반환
+    }
 }
 
 /// 캐릭터 윈도우 콘텐츠 뷰
@@ -77,9 +83,6 @@ struct CharacterWindowContent: View {
     @State private var showInfo = false
     @State private var infoItems: [InfoItem] = []
     @State private var currentMessage = ""
-    @State private var isDragging = false
-    @State private var initialWindowPosition: CGPoint = .zero
-    @State private var dragStartLocation: CGPoint = .zero
 
     private let providers: [InfoProvider] = [
         BatteryProvider(),
@@ -107,47 +110,9 @@ struct CharacterWindowContent: View {
                 HStack {
                     Spacer()
                     CharacterView(characterType: characterType, size: characterSize)
-                        .gesture(
-                            DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                                .onChanged { value in
-                                    if !isDragging {
-                                        isDragging = true
-                                        // 드래그 시작 시 초기 위치 저장
-                                        if let window = NSApp.windows.first(where: { $0 is CharacterWindow }) {
-                                            initialWindowPosition = window.frame.origin
-                                            dragStartLocation = value.startLocation
-                                        }
-                                    }
-
-                                    // 드래그 거리 계산
-                                    let distance = sqrt(value.translation.width * value.translation.width +
-                                                       value.translation.height * value.translation.height)
-
-                                    // 실제로 드래그 중일 때만 정보창 닫기 (거리 > 5)
-                                    if distance > 5 && showInfo {
-                                        showInfo = false
-                                    }
-
-                                    // 마우스 이동량 계산 (글로벌 좌표)
-                                    let deltaX = value.location.x - dragStartLocation.x
-                                    let deltaY = value.location.y - dragStartLocation.y
-
-                                    // 새 윈도우 위치 계산
-                                    moveWindowTo(x: initialWindowPosition.x + deltaX,
-                                               y: initialWindowPosition.y - deltaY) // Y축 반전
-                                }
-                                .onEnded { value in
-                                    let distance = sqrt(value.translation.width * value.translation.width +
-                                                       value.translation.height * value.translation.height)
-
-                                    isDragging = false
-
-                                    // 드래그 거리가 매우 짧으면 탭으로 처리 (토글)
-                                    if distance < 5 {
-                                        handleTap()
-                                    }
-                                }
-                        )
+                        .onTapGesture {
+                            handleTap()
+                        }
                     Spacer()
                 }
                 Spacer()
@@ -197,20 +162,5 @@ struct CharacterWindowContent: View {
                 self.currentMessage = messageGenerator.getRandomMessage()
             }
         }
-    }
-
-    /// 윈도우를 특정 위치로 이동
-    private func moveWindowTo(x: CGFloat, y: CGFloat) {
-        guard let window = NSApp.windows.first(where: { $0 is CharacterWindow }) else {
-            return
-        }
-
-        var frame = window.frame
-        frame.origin.x = x
-        frame.origin.y = y
-
-        // 화면 경계 체크 없이 이동 (메뉴바 위로도 이동 가능)
-        // display: false로 설정하여 더 빠른 반응성 확보
-        window.setFrame(frame, display: false)
     }
 }
