@@ -194,6 +194,7 @@ struct CharacterWindowContent: View {
         frame.origin.y -= offset.height // SwiftUI 좌표계는 반대
 
         // 화면 경계 체크 없이 이동 (메뉴바 위로도 이동 가능)
-        window.setFrame(frame, display: true, animate: false)
+        // display: false로 설정하여 더 빠른 반응성 확보
+        window.setFrame(frame, display: false)
     }
 }
