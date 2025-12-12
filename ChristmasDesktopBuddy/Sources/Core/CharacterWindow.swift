@@ -108,8 +108,16 @@ struct CharacterWindowContent: View {
                                 .onChanged { value in
                                     if !isDragging {
                                         isDragging = true
-                                        showInfo = false
                                         lastDragValue = .zero
+                                    }
+
+                                    // 드래그 거리 계산
+                                    let distance = sqrt(value.translation.width * value.translation.width +
+                                                       value.translation.height * value.translation.height)
+
+                                    // 실제로 드래그 중일 때만 정보창 닫기 (거리 > 5)
+                                    if distance > 5 && showInfo {
+                                        showInfo = false
                                     }
 
                                     // 이전 위치와의 차이만큼 윈도우 이동 (실시간)
@@ -121,12 +129,13 @@ struct CharacterWindowContent: View {
                                     lastDragValue = value.translation
                                 }
                                 .onEnded { value in
+                                    let distance = sqrt(value.translation.width * value.translation.width +
+                                                       value.translation.height * value.translation.height)
+
                                     isDragging = false
                                     lastDragValue = .zero
 
-                                    // 드래그 거리가 매우 짧으면 탭으로 처리
-                                    let distance = sqrt(value.translation.width * value.translation.width +
-                                                       value.translation.height * value.translation.height)
+                                    // 드래그 거리가 매우 짧으면 탭으로 처리 (토글)
                                     if distance < 5 {
                                         handleTap()
                                     }
