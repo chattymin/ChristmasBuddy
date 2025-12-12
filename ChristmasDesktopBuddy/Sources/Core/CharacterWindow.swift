@@ -84,6 +84,13 @@ struct CharacterWindowContent: View {
     @State private var infoItems: [InfoItem] = []
     @State private var currentMessage = ""
 
+    // 드래그 관련 상태
+    @State private var isDragging = false
+    @State private var dragStartTime: Date?
+    @State private var isDizzy = false
+    @State private var wobbleRotation: Double = 0
+    @State private var dragTimer: Timer?
+
     private let providers: [InfoProvider] = [
         BatteryProvider(),
         TimeProvider()
@@ -109,10 +116,28 @@ struct CharacterWindowContent: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    CharacterView(characterType: characterType, size: characterSize)
-                        .onTapGesture {
-                            handleTap()
+                    ZStack {
+                        // 어지러워하는 이펙트 - 별들
+                        if isDizzy && !isDragging {
+                            DizzyStarsEffect()
                         }
+
+                        // 캐릭터
+                        CharacterView(characterType: characterType, size: characterSize, isDizzy: isDizzy)
+                            .rotationEffect(isDizzy && !isDragging ? .degrees(wobbleRotation) : .zero)
+                            .onTapGesture {
+                                handleTap()
+                            }
+                            .simultaneousGesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        handleDragChanged()
+                                    }
+                                    .onEnded { _ in
+                                        handleDragEnded()
+                                    }
+                            )
+                    }
                     Spacer()
                 }
                 Spacer()
@@ -160,6 +185,99 @@ struct CharacterWindowContent: View {
             await MainActor.run {
                 self.infoItems = items
                 self.currentMessage = messageGenerator.getRandomMessage()
+            }
+        }
+    }
+
+    /// 드래그 시작/변경 핸들러
+    private func handleDragChanged() {
+        // 드래그 시작 시점 기록
+        if dragStartTime == nil {
+            dragStartTime = Date()
+            isDragging = true
+
+            // 타이머로 드래그 시간 체크
+            dragTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+                if let startTime = dragStartTime,
+                   Date().timeIntervalSince(startTime) >= 5.0,
+                   !isDizzy {
+                    // 어지러워하는 상태로 변경
+                    withAnimation {
+                        isDizzy = true
+                    }
+                    startWobbleAnimation()
+                    dragTimer?.invalidate()
+                    dragTimer = nil
+                }
+            }
+        }
+    }
+
+    /// 드래그 종료 핸들러
+    private func handleDragEnded() {
+        isDragging = false
+        dragStartTime = nil
+        dragTimer?.invalidate()
+        dragTimer = nil
+
+        // 어지러워하는 상태라면 3초 후 복구
+        if isDizzy {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                withAnimation {
+                    isDizzy = false
+                    wobbleRotation = 0
+                }
+            }
+        }
+    }
+
+    /// 흔들림 애니메이션 시작
+    private func startWobbleAnimation() {
+        withAnimation(
+            Animation.easeInOut(duration: 0.15)
+                .repeatForever(autoreverses: true)
+        ) {
+            wobbleRotation = 15  // 좌우로 15도씩 흔들림
+        }
+    }
+}
+
+/// 어지러워하는 상태의 별 이펙트
+struct DizzyStarsEffect: View {
+    @State private var rotation: Double = 0
+
+    var body: some View {
+        ZStack {
+            // 왼쪽 위 별
+            Text("⭐")
+                .font(.system(size: 20))
+                .offset(x: -40, y: -40)
+                .rotationEffect(.degrees(rotation))
+
+            // 오른쪽 위 별
+            Text("⭐")
+                .font(.system(size: 20))
+                .offset(x: 40, y: -40)
+                .rotationEffect(.degrees(-rotation))
+
+            // 왼쪽 아래 별
+            Text("✨")
+                .font(.system(size: 16))
+                .offset(x: -45, y: 25)
+                .rotationEffect(.degrees(rotation * 1.5))
+
+            // 오른쪽 아래 별
+            Text("✨")
+                .font(.system(size: 16))
+                .offset(x: 45, y: 25)
+                .rotationEffect(.degrees(-rotation * 1.5))
+        }
+        .onAppear {
+            withAnimation(
+                Animation.linear(duration: 2.0)
+                    .repeatForever(autoreverses: false)
+            ) {
+                rotation = 360
             }
         }
     }

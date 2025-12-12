@@ -19,4 +19,8 @@ enum CharacterType: String, CaseIterable {
     var svgFileName: String {
         return "\(rawValue).svg"
     }
+
+    var dizzySvgFileName: String {
+        return "\(rawValue)-dizzy.svg"
+    }
 }

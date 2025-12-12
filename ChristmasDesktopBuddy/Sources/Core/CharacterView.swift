@@ -4,11 +4,13 @@ import SwiftUI
 struct CharacterView: View {
     let characterType: CharacterType
     let size: CGFloat
+    var isDizzy: Bool = false
     @State private var isHovering = false
 
     var body: some View {
         Group {
-            if let svgData = loadSVG(fileName: characterType.svgFileName),
+            let fileName = isDizzy ? characterType.dizzySvgFileName : characterType.svgFileName
+            if let svgData = loadSVG(fileName: fileName),
                let nsImage = NSImage(data: svgData) {
                 Image(nsImage: nsImage)
                     .resizable()
