@@ -85,17 +85,17 @@ struct CharacterWindowContent: View {
 
     var body: some View {
         ZStack {
-            // 투명 배경 (드래그 영역 + 외부 클릭 감지)
-            Color.clear
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    // 외부 클릭 시 정보창 닫기
-                    if showInfo {
+            // 투명 배경 (외부 클릭 감지)
+            if showInfo {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        // 외부 클릭 시 정보창 닫기
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                             showInfo = false
                         }
                     }
-                }
+            }
 
             // 캐릭터
             VStack {
