@@ -5,6 +5,7 @@ import SwiftUI
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var characterWindow: CharacterWindow?
     private var statusItem: NSStatusItem?
+    private var toggleWindowMenuItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🎄 Christmas Desktop Buddy 시작!")
@@ -53,14 +54,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        // 윈도우 표시/숨기기
-        menu.addItem(
-            NSMenuItem(
-                title: "윈도우 표시",
-                action: #selector(showWindow),
-                keyEquivalent: "s"
-            )
+        // 윈도우 표시/숨기기 (토글)
+        toggleWindowMenuItem = NSMenuItem(
+            title: "윈도우 숨기기",
+            action: #selector(toggleWindow),
+            keyEquivalent: "h"
         )
+        toggleWindowMenuItem?.state = .on
+        menu.addItem(toggleWindowMenuItem!)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -93,7 +94,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("✨ 캐릭터 변경: \(type.displayName)")
     }
 
-    @objc private func showWindow() {
-        characterWindow?.makeKeyAndOrderFront(nil)
+    @objc private func toggleWindow() {
+        guard let window = characterWindow else { return }
+
+        if window.isVisible {
+            // 윈도우 숨기기
+            window.orderOut(nil)
+            toggleWindowMenuItem?.title = "윈도우 표시"
+            toggleWindowMenuItem?.state = .off
+            print("👻 윈도우 숨김")
+        } else {
+            // 윈도우 표시
+            window.makeKeyAndOrderFront(nil)
+            toggleWindowMenuItem?.title = "윈도우 숨기기"
+            toggleWindowMenuItem?.state = .on
+            print("👀 윈도우 표시")
+        }
     }
 }
