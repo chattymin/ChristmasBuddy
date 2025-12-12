@@ -189,10 +189,11 @@ struct CharacterWindowContent: View {
             return
         }
 
-        var newOrigin = window.frame.origin
-        newOrigin.x += offset.width
-        newOrigin.y -= offset.height // SwiftUI 좌표계는 반대
+        var frame = window.frame
+        frame.origin.x += offset.width
+        frame.origin.y -= offset.height // SwiftUI 좌표계는 반대
 
-        window.setFrameOrigin(newOrigin)
+        // 화면 경계 체크 없이 이동 (메뉴바 위로도 이동 가능)
+        window.setFrame(frame, display: true, animate: false)
     }
 }
