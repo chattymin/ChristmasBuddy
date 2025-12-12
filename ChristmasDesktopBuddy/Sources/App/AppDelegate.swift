@@ -56,11 +56,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // 윈도우 표시/숨기기 (토글)
         toggleWindowMenuItem = NSMenuItem(
-            title: "윈도우 숨기기",
+            title: "윈도우: On",
             action: #selector(toggleWindow),
             keyEquivalent: "h"
         )
-        toggleWindowMenuItem?.state = .on
         menu.addItem(toggleWindowMenuItem!)
 
         menu.addItem(NSMenuItem.separator())
@@ -100,14 +99,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if window.isVisible {
             // 윈도우 숨기기
             window.orderOut(nil)
-            toggleWindowMenuItem?.title = "윈도우 표시"
-            toggleWindowMenuItem?.state = .off
+            toggleWindowMenuItem?.title = "윈도우: Off"
             print("👻 윈도우 숨김")
         } else {
             // 윈도우 표시
             window.makeKeyAndOrderFront(nil)
-            toggleWindowMenuItem?.title = "윈도우 숨기기"
-            toggleWindowMenuItem?.state = .on
+            toggleWindowMenuItem?.title = "윈도우: On"
             print("👀 윈도우 표시")
         }
     }
