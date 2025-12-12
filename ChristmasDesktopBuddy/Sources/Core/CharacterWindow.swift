@@ -103,11 +103,8 @@ struct CharacterWindowContent: View {
                 HStack {
                     Spacer()
                     CharacterView(characterType: characterType, size: characterSize)
-                        .onTapGesture {
-                            handleTap()
-                        }
                         .gesture(
-                            DragGesture()
+                            DragGesture(minimumDistance: 0)
                                 .onChanged { value in
                                     if !isDragging {
                                         isDragging = true
@@ -123,9 +120,16 @@ struct CharacterWindowContent: View {
                                     moveWindow(by: delta)
                                     lastDragValue = value.translation
                                 }
-                                .onEnded { _ in
+                                .onEnded { value in
                                     isDragging = false
                                     lastDragValue = .zero
+
+                                    // 드래그 거리가 매우 짧으면 탭으로 처리
+                                    let distance = sqrt(value.translation.width * value.translation.width +
+                                                       value.translation.height * value.translation.height)
+                                    if distance < 5 {
+                                        handleTap()
+                                    }
                                 }
                         )
                     Spacer()
