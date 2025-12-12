@@ -74,8 +74,8 @@ struct CharacterWindowContent: View {
     @State private var showInfo = false
     @State private var infoItems: [InfoItem] = []
     @State private var currentMessage = ""
-    @State private var dragOffset: CGSize = .zero
     @State private var isDragging = false
+    @State private var lastDragValue: CGSize = .zero
 
     private let providers: [InfoProvider] = [
         BatteryProvider(),
@@ -101,14 +101,23 @@ struct CharacterWindowContent: View {
                         .gesture(
                             DragGesture()
                                 .onChanged { value in
-                                    isDragging = true
-                                    showInfo = false
-                                    dragOffset = value.translation
+                                    if !isDragging {
+                                        isDragging = true
+                                        showInfo = false
+                                        lastDragValue = .zero
+                                    }
+
+                                    // 이전 위치와의 차이만큼 윈도우 이동 (실시간)
+                                    let delta = CGSize(
+                                        width: value.translation.width - lastDragValue.width,
+                                        height: value.translation.height - lastDragValue.height
+                                    )
+                                    moveWindow(by: delta)
+                                    lastDragValue = value.translation
                                 }
                                 .onEnded { _ in
                                     isDragging = false
-                                    moveWindow(by: dragOffset)
-                                    dragOffset = .zero
+                                    lastDragValue = .zero
                                 }
                         )
                     Spacer()
