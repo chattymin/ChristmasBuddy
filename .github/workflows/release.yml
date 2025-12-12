@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: "5.9"
+
+    - name: Install Pillow (for icon generation)
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install Pillow
+
+    - name: Create app icon
+      run: |
+        chmod +x create_icon.sh
+        ./create_icon.sh
+
+    - name: Build app bundle
+      run: |
+        chmod +x build_app.sh
+        ./build_app.sh
+
+    - name: Create DMG
+      run: |
+        chmod +x create_dmg.sh
+        ./create_dmg.sh
+
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ChristmasDesktopBuddy-v1.0.dmg
+        body: |
+          # Christmas Desktop Buddy ${{ steps.get_version.outputs.VERSION }} 🎄
+
+          맥OS 데스크탑 위에 떠다니는 귀여운 크리스마스 캐릭터!
+
+          ## 다운로드
+
+          **ChristmasDesktopBuddy-v1.0.dmg** (macOS 13.0+)
+
+          ## 설치 방법
+
+          1. DMG 파일을 다운로드합니다
+          2. DMG를 열고 `ChristmasDesktopBuddy.app`을 `Applications` 폴더로 드래그합니다
+          3. Applications 폴더에서 앱을 실행합니다
+          4. 첫 실행 시 보안 경고가 나타나면:
+             - 시스템 설정 → 개인 정보 보호 및 보안 → "확인 없이 열기" 클릭
+
+          ## 기능 ✨
+
+          - 🎨 3가지 캐릭터: 눈사람 ⛄, 산타 🎅, 루돌프 🦌
+          - 📊 배터리 및 시간 정보 표시
+          - 💬 시간대별 랜덤 메시지
+          - 🖱️ 드래그로 위치 이동
+          - 🎄 메뉴바 통합
+
+          ## 사용 방법
+
+          - **클릭**: 정보 표시
+          - **드래그**: 위치 이동
+          - **메뉴바 🎄**: 캐릭터 변경 및 설정
+
+          ---
+
+          메리 크리스마스! 🎅
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
