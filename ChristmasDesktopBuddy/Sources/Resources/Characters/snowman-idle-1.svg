@@ -1,0 +1,41 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pixel art snowman - Idle frame 1 (arms up) -->
+  <!-- Bottom snowball -->
+  <rect x="16" y="44" width="32" height="4" fill="#FFFFFF"/>
+  <rect x="12" y="48" width="40" height="8" fill="#FFFFFF"/>
+  <rect x="16" y="56" width="32" height="4" fill="#FFFFFF"/>
+
+  <!-- Middle snowball -->
+  <rect x="20" y="28" width="24" height="4" fill="#FFFFFF"/>
+  <rect x="16" y="32" width="32" height="12" fill="#FFFFFF"/>
+  <rect x="20" y="44" width="24" height="4" fill="#FFFFFF"/>
+
+  <!-- Arms (raised up) -->
+  <rect x="8" y="32" width="8" height="4" fill="#8B4513"/>
+  <rect x="48" y="32" width="8" height="4" fill="#8B4513"/>
+
+  <!-- Head -->
+  <rect x="24" y="12" width="16" height="4" fill="#FFFFFF"/>
+  <rect x="20" y="16" width="24" height="12" fill="#FFFFFF"/>
+  <rect x="24" y="28" width="16" height="4" fill="#FFFFFF"/>
+
+  <!-- Eyes -->
+  <rect x="28" y="20" width="4" height="4" fill="#000000"/>
+  <rect x="36" y="20" width="4" height="4" fill="#000000"/>
+
+  <!-- Carrot nose -->
+  <rect x="32" y="24" width="4" height="4" fill="#FF6B35"/>
+  <rect x="36" y="24" width="4" height="4" fill="#FF6B35"/>
+
+  <!-- Hat -->
+  <rect x="20" y="8" width="24" height="4" fill="#000000"/>
+  <rect x="24" y="4" width="16" height="4" fill="#000000"/>
+  <rect x="28" y="0" width="8" height="4" fill="#000000"/>
+
+  <!-- Buttons -->
+  <rect x="30" y="36" width="4" height="4" fill="#000000"/>
+  <rect x="30" y="40" width="4" height="4" fill="#000000"/>
+
+  <!-- Shadow/outline effect -->
+  <rect x="16" y="60" width="32" height="4" fill="#E0E0E0" opacity="0.5"/>
+</svg>

@@ -117,6 +117,10 @@ struct CharacterWindowContent: View {
     // 캐릭터 방향
     @State private var facingLeft = false  // 좌측을 향하는지 여부
 
+    // 아이들 애니메이션
+    @State private var idleFrameIndex = 0  // 현재 아이들 프레임 인덱스
+    @State private var idleAnimationTimer: Timer?
+
     private let providers: [InfoProvider] = [
         BatteryProvider(),
         TimeProvider()
@@ -149,8 +153,14 @@ struct CharacterWindowContent: View {
                         }
 
                         // 캐릭터
-                        CharacterView(characterType: characterType, size: characterSize, isDizzy: isDizzy, facingLeft: facingLeft)
-                            .rotationEffect(isDizzy && !isDragging ? .degrees(wobbleRotation) : .zero)
+                        CharacterView(
+                            characterType: characterType,
+                            size: characterSize,
+                            isDizzy: isDizzy,
+                            facingLeft: facingLeft,
+                            idleFrameIndex: idleFrameIndex
+                        )
+                        .rotationEffect(isDizzy && !isDragging ? .degrees(wobbleRotation) : .zero)
                             .onTapGesture {
                                 handleTap()
                             }
@@ -187,9 +197,11 @@ struct CharacterWindowContent: View {
         .ignoresSafeArea()
         .onAppear {
             startBoxCheckTimer()
+            startIdleAnimation()
         }
         .onDisappear {
             checkBoxTimer?.invalidate()
+            idleAnimationTimer?.invalidate()
         }
     }
 
@@ -279,6 +291,16 @@ struct CharacterWindowContent: View {
         checkBoxTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
             print("🔍 상자 체크 중...")
             checkAndCollectBoxes()
+        }
+    }
+
+    /// 아이들 애니메이션 시작
+    private func startIdleAnimation() {
+        idleAnimationTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: true) { [self] _ in
+            // 바쁘지 않을 때만 애니메이션 (상자 수집 중이거나 드래그 중이면 애니메이션 멈춤)
+            if !isCollectingBox && !isDragging {
+                idleFrameIndex = (idleFrameIndex + 1) % 3
+            }
         }
     }
 

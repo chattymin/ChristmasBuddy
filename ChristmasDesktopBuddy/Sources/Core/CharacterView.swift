@@ -6,11 +6,12 @@ struct CharacterView: View {
     let size: CGFloat
     var isDizzy: Bool = false
     var facingLeft: Bool = false  // 좌측을 향하는지 여부
+    var idleFrameIndex: Int = 0   // 아이들 애니메이션 프레임 인덱스
     @State private var isHovering = false
 
     var body: some View {
         Group {
-            let fileName = isDizzy ? characterType.dizzySvgFileName : characterType.svgFileName
+            let fileName = getFileName()
             if let svgData = loadSVG(fileName: fileName),
                let nsImage = NSImage(data: svgData) {
                 Image(nsImage: nsImage)
@@ -28,6 +29,16 @@ struct CharacterView: View {
         .animation(.easeInOut(duration: 0.2), value: isHovering)
         .onHover { hovering in
             isHovering = hovering
+        }
+    }
+
+    /// 현재 표시할 파일명 결정
+    private func getFileName() -> String {
+        if isDizzy {
+            return characterType.dizzySvgFileName
+        } else {
+            // 아이들 애니메이션 프레임 사용
+            return characterType.idleFrameFileName(index: idleFrameIndex)
         }
     }
 
