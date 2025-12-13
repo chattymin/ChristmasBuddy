@@ -6,12 +6,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var characterWindow: CharacterWindow?
     private var statusItem: NSStatusItem?
     private var toggleWindowMenuItem: NSMenuItem?
+    private var boxManager: BoxManager?
+    private var boxWindows: [BoxWindow] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🎄 Christmas Desktop Buddy 시작!")
 
-        // 캐릭터 윈도우 생성
-        characterWindow = CharacterWindow(characterType: .snowman)
+        // 상자 매니저 생성
+        boxManager = BoxManager()
+
+        // 상자 윈도우들 생성
+        setupBoxWindows()
+
+        // 캐릭터 윈도우 생성 (boxManager 전달)
+        characterWindow = CharacterWindow(characterType: .snowman, boxManager: boxManager)
         characterWindow?.makeKeyAndOrderFront(nil)
 
         // 메뉴바 아이템 생성
@@ -19,6 +27,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Dock 아이콘 숨기기 (옵션)
         NSApp.setActivationPolicy(.accessory)
+    }
+
+    /// 상자 윈도우들 생성
+    private func setupBoxWindows() {
+        guard let manager = boxManager else { return }
+
+        boxWindows = manager.boxes.map { box in
+            let window = BoxWindow(box: box, boxManager: manager)
+            window.makeKeyAndOrderFront(nil)
+            return window
+        }
+
+        print("📦 선물 상자 \(boxWindows.count)개 생성")
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

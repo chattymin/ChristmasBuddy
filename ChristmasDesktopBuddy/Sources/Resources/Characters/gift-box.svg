@@ -1,0 +1,28 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pixel art Christmas gift box -->
+  <!-- Box body (red) -->
+  <rect x="8" y="16" width="32" height="4" fill="#DC143C"/>
+  <rect x="4" y="20" width="40" height="20" fill="#DC143C"/>
+  <rect x="8" y="40" width="32" height="4" fill="#C41E3A"/>
+
+  <!-- Vertical ribbon (gold) -->
+  <rect x="20" y="16" width="8" height="28" fill="#FFD700"/>
+
+  <!-- Horizontal ribbon (gold) -->
+  <rect x="4" y="24" width="40" height="8" fill="#FFD700"/>
+
+  <!-- Ribbon bow (top) -->
+  <!-- Bow center -->
+  <rect x="20" y="8" width="8" height="8" fill="#FFD700"/>
+
+  <!-- Left bow -->
+  <rect x="12" y="4" width="8" height="4" fill="#FFD700"/>
+  <rect x="12" y="8" width="8" height="8" fill="#FFD700"/>
+
+  <!-- Right bow -->
+  <rect x="28" y="4" width="8" height="4" fill="#FFD700"/>
+  <rect x="28" y="8" width="8" height="8" fill="#FFD700"/>
+
+  <!-- Shadow -->
+  <rect x="8" y="44" width="32" height="4" fill="#000000" opacity="0.2"/>
+</svg>

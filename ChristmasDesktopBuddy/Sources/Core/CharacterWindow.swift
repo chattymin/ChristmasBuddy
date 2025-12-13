@@ -6,9 +6,11 @@ class CharacterWindow: NSWindow {
     private var characterType: CharacterType
     private let characterSize: CGFloat = 80
     private var hostingView: NSHostingView<CharacterWindowContent>?
+    weak var boxManager: BoxManager?
 
-    init(characterType: CharacterType = .snowman) {
+    init(characterType: CharacterType = .snowman, boxManager: BoxManager? = nil) {
         self.characterType = characterType
+        self.boxManager = boxManager
 
         // 화면 중앙에 윈도우 위치
         let windowRect = NSRect(x: 100, y: 100, width: 300, height: 300)
@@ -52,7 +54,9 @@ class CharacterWindow: NSWindow {
     private func setupContent() {
         let content = CharacterWindowContent(
             characterType: characterType,
-            characterSize: characterSize
+            characterSize: characterSize,
+            boxManager: boxManager,
+            characterWindow: self
         )
 
         let hostingView = NSHostingView(rootView: content)
@@ -79,6 +83,8 @@ class CharacterWindow: NSWindow {
 struct CharacterWindowContent: View {
     let characterType: CharacterType
     let characterSize: CGFloat
+    weak var boxManager: BoxManager?
+    weak var characterWindow: CharacterWindow?
 
     @State private var showInfo = false
     @State private var infoItems: [InfoItem] = []
@@ -90,6 +96,10 @@ struct CharacterWindowContent: View {
     @State private var isDizzy = false
     @State private var wobbleRotation: Double = 0
     @State private var dragTimer: Timer?
+
+    // 상자 수집 관련 상태
+    @State private var isCollectingBox = false
+    @State private var checkBoxTimer: Timer?
 
     private let providers: [InfoProvider] = [
         BatteryProvider(),
@@ -159,6 +169,12 @@ struct CharacterWindowContent: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea()
+        .onAppear {
+            startBoxCheckTimer()
+        }
+        .onDisappear {
+            checkBoxTimer?.invalidate()
+        }
     }
 
     /// 탭 핸들러
@@ -239,6 +255,60 @@ struct CharacterWindowContent: View {
         ) {
             wobbleRotation = 15  // 좌우로 15도씩 흔들림
         }
+    }
+
+    /// 상자 체크 타이머 시작
+    private func startBoxCheckTimer() {
+        checkBoxTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+            checkAndCollectBoxes()
+        }
+    }
+
+    /// 흩어진 상자 확인 및 수집
+    private func checkAndCollectBoxes() {
+        guard !isCollectingBox,
+              let manager = boxManager,
+              let window = characterWindow else { return }
+
+        let scatteredBoxes = manager.getScatteredBoxes()
+        if let firstBox = scatteredBoxes.first {
+            isCollectingBox = true
+            collectBox(firstBox, characterWindow: window, manager: manager)
+        }
+    }
+
+    /// 상자 수집 (이동 -> 줍기 -> 원위치)
+    private func collectBox(_ box: Box, characterWindow: CharacterWindow, manager: BoxManager) {
+        let characterPosition = characterWindow.frame.origin
+
+        // 1단계: 상자 위치로 이동
+        moveCharacterTo(position: box.position, characterWindow: characterWindow) {
+            // 2단계: 잠시 대기 (줍는 시간)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                // 3단계: 상자를 원래 위치로 되돌리기
+                manager.returnBoxToOriginalPosition(id: box.id)
+
+                // 4단계: 원래 위치로 돌아가기
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    moveCharacterTo(position: characterPosition, characterWindow: characterWindow) {
+                        isCollectingBox = false
+                    }
+                }
+            }
+        }
+    }
+
+    /// 캐릭터를 특정 위치로 이동
+    private func moveCharacterTo(position: CGPoint, characterWindow: CharacterWindow, completion: @escaping () -> Void) {
+        let duration: TimeInterval = 0.5
+
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            characterWindow.animator().setFrameOrigin(position)
+        }, completionHandler: {
+            completion()
+        })
     }
 }
 
