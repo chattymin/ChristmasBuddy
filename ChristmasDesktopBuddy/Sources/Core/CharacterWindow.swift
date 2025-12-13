@@ -305,13 +305,13 @@ struct CharacterWindowContent: View {
         moveCharacterTo(position: alignedBoxPosition, characterWindow: characterWindow) {
             print("✋ 상자 도착! 들어올리는 중...")
 
-            // 2단계: 상자 들기
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            // 2단계: 상자 들기 (딜레이 최소화)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 carriedBoxId = box.id
                 print("📦 상자를 들었습니다!")
 
                 // 3단계: 상자를 들고 원래 쌓여있던 위치로 이동 (정렬된 위치)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     print("🚶 상자를 들고 원위치로 이동 중...")
                     moveCharacterToWithBox(
                         position: alignedStackPosition,
@@ -324,8 +324,8 @@ struct CharacterWindowContent: View {
                         manager.returnBoxToOriginalPosition(id: box.id)
                         carriedBoxId = nil
 
-                        // 5단계: 다음 흩어진 상자 확인
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        // 5단계: 다음 흩어진 상자 확인 (딜레이 최소화)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                             let scatteredBoxes = manager.getScatteredBoxes()
                             if let nextBox = scatteredBoxes.first {
                                 // 다음 상자가 있으면 바로 수집

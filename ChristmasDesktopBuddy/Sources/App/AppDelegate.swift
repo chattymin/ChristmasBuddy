@@ -101,11 +101,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Visibility 모드 선택 (서브메뉴)
+        // Display 모드 선택 (서브메뉴)
         let visibilitySubmenu = NSMenu()
 
         let allVisibleItem = NSMenuItem(
-            title: "✓ All",
+            title: "Character & Gifts",
             action: #selector(setVisibilityMode(_:)),
             keyEquivalent: ""
         )
@@ -124,7 +124,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         visibilitySubmenu.addItem(characterOnlyItem)
 
         let hiddenItem = NSMenuItem(
-            title: "✗ Off",
+            title: "Hide All",
             action: #selector(setVisibilityMode(_:)),
             keyEquivalent: ""
         )
@@ -132,7 +132,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         visibilityMenuItems[.hidden] = hiddenItem
         visibilitySubmenu.addItem(hiddenItem)
 
-        let visibilityMenuItem = NSMenuItem(title: "Visible", action: nil, keyEquivalent: "")
+        let visibilityMenuItem = NSMenuItem(title: "Display", action: nil, keyEquivalent: "")
         visibilityMenuItem.submenu = visibilitySubmenu
         menu.addItem(visibilityMenuItem)
 
