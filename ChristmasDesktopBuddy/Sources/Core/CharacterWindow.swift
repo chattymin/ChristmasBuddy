@@ -12,8 +12,20 @@ class CharacterWindow: NSWindow {
         self.characterType = characterType
         self.boxManager = boxManager
 
-        // 화면 중앙에 윈도우 위치
-        let windowRect = NSRect(x: 100, y: 100, width: 300, height: 300)
+        // 화면 좌측 하단에 윈도우 위치
+        let windowWidth: CGFloat = 300
+        let windowHeight: CGFloat = 300
+
+        var initialX: CGFloat = 100
+        var initialY: CGFloat = 100
+
+        if let screen = NSScreen.main {
+            let screenFrame = screen.visibleFrame
+            initialX = screenFrame.minX - 70
+            initialY = screenFrame.minY - 70
+        }
+
+        let windowRect = NSRect(x: initialX, y: initialY, width: windowWidth, height: windowHeight)
 
         super.init(
             contentRect: windowRect,
@@ -102,6 +114,9 @@ struct CharacterWindowContent: View {
     @State private var checkBoxTimer: Timer?
     @State private var carriedBoxId: UUID? = nil  // 현재 들고 있는 상자 ID
 
+    // 캐릭터 방향
+    @State private var facingLeft = false  // 좌측을 향하는지 여부
+
     private let providers: [InfoProvider] = [
         BatteryProvider(),
         TimeProvider()
@@ -134,7 +149,7 @@ struct CharacterWindowContent: View {
                         }
 
                         // 캐릭터
-                        CharacterView(characterType: characterType, size: characterSize, isDizzy: isDizzy)
+                        CharacterView(characterType: characterType, size: characterSize, isDizzy: isDizzy, facingLeft: facingLeft)
                             .rotationEffect(isDizzy && !isDragging ? .degrees(wobbleRotation) : .zero)
                             .onTapGesture {
                                 handleTap()
@@ -386,6 +401,13 @@ struct CharacterWindowContent: View {
         let totalDuration = TimeInterval(distance / speed)
         let frameRate: TimeInterval = 1.0 / 60.0  // 60fps
 
+        // 이동 방향 감지 (왼쪽으로 이동하면 facingLeft = true)
+        if position.x < startPosition.x {
+            facingLeft = true
+        } else if position.x > startPosition.x {
+            facingLeft = false
+        }
+
         var elapsed: TimeInterval = 0
         var timer: Timer?
 
@@ -423,6 +445,13 @@ struct CharacterWindowContent: View {
         let speed: CGFloat = 600  // 초당 600픽셀
         let totalDuration = TimeInterval(distance / speed)
         let frameRate: TimeInterval = 1.0 / 60.0  // 60fps
+
+        // 이동 방향 감지 (왼쪽으로 이동하면 facingLeft = true)
+        if position.x < startPosition.x {
+            facingLeft = true
+        } else if position.x > startPosition.x {
+            facingLeft = false
+        }
 
         // 캐릭터 윈도우 중앙에 상자를 위치시키기
         let characterWindowSize: CGFloat = 300

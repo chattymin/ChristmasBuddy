@@ -5,6 +5,7 @@ struct CharacterView: View {
     let characterType: CharacterType
     let size: CGFloat
     var isDizzy: Bool = false
+    var facingLeft: Bool = false  // 좌측을 향하는지 여부
     @State private var isHovering = false
 
     var body: some View {
@@ -22,6 +23,7 @@ struct CharacterView: View {
                     .font(.system(size: size))
             }
         }
+        .scaleEffect(x: facingLeft ? -1 : 1, y: 1)  // 좌우 반전
         .scaleEffect(isHovering ? 1.1 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: isHovering)
         .onHover { hovering in
