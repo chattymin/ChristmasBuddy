@@ -1,13 +1,22 @@
 import Cocoa
 import SwiftUI
 
+/// Visibility 모드
+enum VisibilityMode {
+    case characterOnly      // 캐릭터만 보임
+    case characterAndBoxes  // 캐릭터와 상자 모두 보임
+    case hidden            // 둘 다 안 보임
+}
+
 /// 앱 델리게이트
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var characterWindow: CharacterWindow?
     private var statusItem: NSStatusItem?
-    private var toggleWindowMenuItem: NSMenuItem?
+    private var visibilityMenuItems: [VisibilityMode: NSMenuItem] = [:]
+    private var scatterBoxesMenuItem: NSMenuItem?
     private var boxManager: BoxManager?
     private var boxWindows: [BoxWindow] = []
+    private var currentVisibilityMode: VisibilityMode = .characterAndBoxes
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🎄 Christmas Desktop Buddy 시작!")
@@ -24,6 +33,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // 메뉴바 아이템 생성
         setupMenuBar()
+
+        // 초기 visibility 상태 적용
+        updateVisibility()
 
         // Dock 아이콘 숨기기 (옵션)
         NSApp.setActivationPolicy(.accessory)
@@ -58,6 +70,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let menu = NSMenu()
+        // 메뉴 아이템 활성화/비활성화를 수동으로 제어
+        menu.autoenablesItems = false
 
         // 캐릭터 변경 메뉴
         let characterMenu = NSMenu()
@@ -78,23 +92,49 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
 
         // 선물 퍼트리기
-        menu.addItem(
-            NSMenuItem(
-                title: "선물 퍼트리기",
-                action: #selector(scatterBoxes),
-                keyEquivalent: "s"
-            )
+        scatterBoxesMenuItem = NSMenuItem(
+            title: "선물 퍼트리기",
+            action: #selector(scatterBoxes),
+            keyEquivalent: "s"
         )
+        menu.addItem(scatterBoxesMenuItem!)
 
         menu.addItem(NSMenuItem.separator())
 
-        // 캐릭터 표시/숨기기 (토글)
-        toggleWindowMenuItem = NSMenuItem(
-            title: "Visible: ✓ On",
-            action: #selector(toggleWindow),
-            keyEquivalent: "h"
+        // Visibility 모드 선택 (서브메뉴)
+        let visibilitySubmenu = NSMenu()
+
+        let allVisibleItem = NSMenuItem(
+            title: "✓ All",
+            action: #selector(setVisibilityMode(_:)),
+            keyEquivalent: ""
         )
-        menu.addItem(toggleWindowMenuItem!)
+        allVisibleItem.tag = 0
+        allVisibleItem.state = .on
+        visibilityMenuItems[.characterAndBoxes] = allVisibleItem
+        visibilitySubmenu.addItem(allVisibleItem)
+
+        let characterOnlyItem = NSMenuItem(
+            title: "Character Only",
+            action: #selector(setVisibilityMode(_:)),
+            keyEquivalent: ""
+        )
+        characterOnlyItem.tag = 1
+        visibilityMenuItems[.characterOnly] = characterOnlyItem
+        visibilitySubmenu.addItem(characterOnlyItem)
+
+        let hiddenItem = NSMenuItem(
+            title: "✗ Off",
+            action: #selector(setVisibilityMode(_:)),
+            keyEquivalent: ""
+        )
+        hiddenItem.tag = 2
+        visibilityMenuItems[.hidden] = hiddenItem
+        visibilitySubmenu.addItem(hiddenItem)
+
+        let visibilityMenuItem = NSMenuItem(title: "Visible", action: nil, keyEquivalent: "")
+        visibilityMenuItem.submenu = visibilitySubmenu
+        menu.addItem(visibilityMenuItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -127,23 +167,66 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("✨ 캐릭터 변경: \(type.displayName)")
     }
 
-    @objc private func toggleWindow() {
-        guard let window = characterWindow else { return }
+    @objc private func setVisibilityMode(_ sender: NSMenuItem) {
+        // tag로 모드 결정
+        let mode: VisibilityMode
+        switch sender.tag {
+        case 0:
+            mode = .characterAndBoxes
+        case 1:
+            mode = .characterOnly
+        case 2:
+            mode = .hidden
+        default:
+            return
+        }
 
-        if window.isVisible {
-            // 캐릭터 숨기기
-            window.orderOut(nil)
-            toggleWindowMenuItem?.title = "Visible: ✗ Off"
-            print("👻 캐릭터 숨김")
-        } else {
-            // 캐릭터 표시
-            window.makeKeyAndOrderFront(nil)
-            toggleWindowMenuItem?.title = "Visible: ✓ On"
-            print("👀 캐릭터 표시")
+        currentVisibilityMode = mode
+        updateVisibility()
+        updateVisibilityMenuSelection()
+    }
+
+    private func updateVisibility() {
+        guard let characterWin = characterWindow else { return }
+
+        switch currentVisibilityMode {
+        case .characterAndBoxes:
+            // 캐릭터와 상자 모두 표시
+            characterWin.makeKeyAndOrderFront(nil)
+            boxWindows.forEach { $0.makeKeyAndOrderFront(nil) }
+            scatterBoxesMenuItem?.isEnabled = true
+            print("👀 캐릭터와 상자 모두 표시")
+
+        case .characterOnly:
+            // 캐릭터만 표시
+            characterWin.makeKeyAndOrderFront(nil)
+            boxWindows.forEach { $0.orderOut(nil) }
+            scatterBoxesMenuItem?.isEnabled = false
+            print("👤 캐릭터만 표시")
+
+        case .hidden:
+            // 모두 숨김
+            characterWin.orderOut(nil)
+            boxWindows.forEach { $0.orderOut(nil) }
+            scatterBoxesMenuItem?.isEnabled = false
+            print("👻 모두 숨김")
         }
     }
 
+    private func updateVisibilityMenuSelection() {
+        // 모든 메뉴 아이템의 체크 해제
+        visibilityMenuItems.values.forEach { $0.state = .off }
+        // 현재 모드만 체크
+        visibilityMenuItems[currentVisibilityMode]?.state = .on
+    }
+
     @objc private func scatterBoxes() {
+        // 상자가 보이는 상태일 때만 실행
+        guard currentVisibilityMode == .characterAndBoxes else {
+            print("⚠️ 상자가 보이지 않는 상태에서는 퍼트릴 수 없습니다")
+            return
+        }
+
         boxManager?.scatterBoxes()
         print("🎁 선물 상자를 퍼트렸습니다!")
     }
