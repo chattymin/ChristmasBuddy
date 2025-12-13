@@ -100,6 +100,7 @@ struct CharacterWindowContent: View {
     // 상자 수집 관련 상태
     @State private var isCollectingBox = false
     @State private var checkBoxTimer: Timer?
+    @State private var carriedBoxId: UUID? = nil  // 현재 들고 있는 상자 ID
 
     private let providers: [InfoProvider] = [
         BatteryProvider(),
@@ -259,7 +260,9 @@ struct CharacterWindowContent: View {
 
     /// 상자 체크 타이머 시작
     private func startBoxCheckTimer() {
+        print("⏰ 상자 체크 타이머 시작!")
         checkBoxTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+            print("🔍 상자 체크 중...")
             checkAndCollectBoxes()
         }
     }
@@ -272,43 +275,154 @@ struct CharacterWindowContent: View {
 
         let scatteredBoxes = manager.getScatteredBoxes()
         if let firstBox = scatteredBoxes.first {
+            print("🎯 캐릭터가 상자를 발견했습니다!")
             isCollectingBox = true
             collectBox(firstBox, characterWindow: window, manager: manager)
         }
     }
 
-    /// 상자 수집 (이동 -> 줍기 -> 원위치)
+    /// 상자 수집 (이동 -> 줍기 -> 들고 이동 -> 내려놓기)
     private func collectBox(_ box: Box, characterWindow: CharacterWindow, manager: BoxManager) {
         let characterPosition = characterWindow.frame.origin
+        let stackPosition = getOriginalStackPosition(for: box.id, in: manager)
+
+        print("🚶 캐릭터가 상자로 이동 시작: \(box.position)")
 
         // 1단계: 상자 위치로 이동
         moveCharacterTo(position: box.position, characterWindow: characterWindow) {
-            // 2단계: 잠시 대기 (줍는 시간)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                // 3단계: 상자를 원래 위치로 되돌리기
-                manager.returnBoxToOriginalPosition(id: box.id)
+            print("✋ 상자 도착! 들어올리는 중...")
 
-                // 4단계: 원래 위치로 돌아가기
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    moveCharacterTo(position: characterPosition, characterWindow: characterWindow) {
-                        isCollectingBox = false
+            // 2단계: 상자 들기
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                carriedBoxId = box.id
+                print("📦 상자를 들었습니다!")
+
+                // 3단계: 상자를 들고 원래 쌓여있던 위치로 이동
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    print("🚶 상자를 들고 원위치로 이동 중...")
+                    moveCharacterToWithBox(
+                        position: stackPosition,
+                        characterWindow: characterWindow,
+                        boxId: box.id,
+                        manager: manager
+                    ) {
+                        // 4단계: 상자 내려놓기
+                        print("📦 상자를 내려놓습니다!")
+                        manager.returnBoxToOriginalPosition(id: box.id)
+                        carriedBoxId = nil
+
+                        // 5단계: 캐릭터 원위치로 복귀
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            print("🏠 캐릭터가 원위치로 돌아가는 중...")
+                            moveCharacterTo(position: characterPosition, characterWindow: characterWindow) {
+                                print("✅ 상자 수집 완료!")
+                                isCollectingBox = false
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    /// 캐릭터를 특정 위치로 이동
-    private func moveCharacterTo(position: CGPoint, characterWindow: CharacterWindow, completion: @escaping () -> Void) {
-        let duration: TimeInterval = 0.5
+    /// 상자의 원래 스택 위치 계산
+    private func getOriginalStackPosition(for boxId: UUID, in manager: BoxManager) -> CGPoint {
+        if let index = manager.boxes.firstIndex(where: { $0.id == boxId }) {
+            let boxSize: CGFloat = 48
+            let stackSpacing: CGFloat = 4
+            if let screen = NSScreen.main {
+                let screenFrame = screen.visibleFrame
+                let originalStackPosition = CGPoint(
+                    x: screenFrame.maxX - boxSize - 20,
+                    y: screenFrame.minY + 20
+                )
+                let yOffset = CGFloat(index) * (boxSize + stackSpacing)
+                return CGPoint(
+                    x: originalStackPosition.x,
+                    y: originalStackPosition.y + yOffset
+                )
+            }
+        }
+        return CGPoint(x: 100, y: 100)
+    }
 
-        NSAnimationContext.runAnimationGroup({ context in
-            context.duration = duration
-            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            characterWindow.animator().setFrameOrigin(position)
-        }, completionHandler: {
-            completion()
-        })
+    /// 캐릭터를 특정 위치로 이동 (프레임 단위로 부드럽게)
+    private func moveCharacterTo(position: CGPoint, characterWindow: CharacterWindow, completion: @escaping () -> Void) {
+        let startPosition = characterWindow.frame.origin
+        let distance = sqrt(pow(position.x - startPosition.x, 2) + pow(position.y - startPosition.y, 2))
+        let speed: CGFloat = 300  // 초당 300픽셀
+        let totalDuration = TimeInterval(distance / speed)
+        let frameRate: TimeInterval = 1.0 / 60.0  // 60fps
+
+        var elapsed: TimeInterval = 0
+        var timer: Timer?
+
+        timer = Timer.scheduledTimer(withTimeInterval: frameRate, repeats: true) { t in
+            elapsed += frameRate
+            let progress = min(elapsed / totalDuration, 1.0)
+
+            // 이징 함수 (easeInOut)
+            let easedProgress = progress < 0.5
+                ? 2 * progress * progress
+                : 1 - pow(-2 * progress + 2, 2) / 2
+
+            let currentX = startPosition.x + (position.x - startPosition.x) * easedProgress
+            let currentY = startPosition.y + (position.y - startPosition.y) * easedProgress
+
+            characterWindow.setFrameOrigin(CGPoint(x: currentX, y: currentY))
+
+            if progress >= 1.0 {
+                t.invalidate()
+                completion()
+            }
+        }
+    }
+
+    /// 캐릭터가 상자를 들고 이동 (상자도 함께 프레임 단위로)
+    private func moveCharacterToWithBox(
+        position: CGPoint,
+        characterWindow: CharacterWindow,
+        boxId: UUID,
+        manager: BoxManager,
+        completion: @escaping () -> Void
+    ) {
+        let startPosition = characterWindow.frame.origin
+        let distance = sqrt(pow(position.x - startPosition.x, 2) + pow(position.y - startPosition.y, 2))
+        let speed: CGFloat = 300  // 초당 300픽셀
+        let totalDuration = TimeInterval(distance / speed)
+        let frameRate: TimeInterval = 1.0 / 60.0  // 60fps
+        let boxOffset = CGPoint(x: 0, y: 60)  // 캐릭터 위에 상자 위치
+
+        var elapsed: TimeInterval = 0
+        var timer: Timer?
+
+        timer = Timer.scheduledTimer(withTimeInterval: frameRate, repeats: true) { t in
+            elapsed += frameRate
+            let progress = min(elapsed / totalDuration, 1.0)
+
+            // 이징 함수 (easeInOut)
+            let easedProgress = progress < 0.5
+                ? 2 * progress * progress
+                : 1 - pow(-2 * progress + 2, 2) / 2
+
+            let currentX = startPosition.x + (position.x - startPosition.x) * easedProgress
+            let currentY = startPosition.y + (position.y - startPosition.y) * easedProgress
+
+            // 캐릭터 이동
+            characterWindow.setFrameOrigin(CGPoint(x: currentX, y: currentY))
+
+            // 상자도 캐릭터와 함께 이동
+            if let boxWindow = manager.boxWindows[boxId] {
+                let boxX = currentX + boxOffset.x
+                let boxY = currentY + boxOffset.y
+                boxWindow.setFrameOrigin(CGPoint(x: boxX, y: boxY))
+            }
+
+            if progress >= 1.0 {
+                t.invalidate()
+                completion()
+            }
+        }
     }
 }
 

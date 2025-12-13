@@ -4,6 +4,7 @@ import AppKit
 /// 선물 상자 관리자
 class BoxManager: ObservableObject {
     @Published var boxes: [Box] = []
+    var boxWindows: [UUID: BoxWindow] = [:]
 
     private let originalStackPosition: CGPoint
     private let boxSize: CGFloat = 48
@@ -40,14 +41,24 @@ class BoxManager: ObservableObject {
     /// 상자 위치 업데이트
     func updateBoxPosition(id: UUID, to position: CGPoint) {
         if let index = boxes.firstIndex(where: { $0.id == id }) {
+            let wasOriginal = boxes[index].isInOriginalPosition
             boxes[index].position = position
             boxes[index].isInOriginalPosition = isPositionOriginal(position, stackIndex: index)
+
+            // 상태 변경 시 로그
+            if wasOriginal && !boxes[index].isInOriginalPosition {
+                print("📍 상자 \(index)번이 흩어졌습니다! 위치: \(position)")
+            }
         }
     }
 
     /// 흩어진 상자들 가져오기
     func getScatteredBoxes() -> [Box] {
-        return boxes.filter { !$0.isInOriginalPosition }
+        let scattered = boxes.filter { !$0.isInOriginalPosition }
+        if !scattered.isEmpty {
+            print("🔍 흩어진 상자 \(scattered.count)개 발견!")
+        }
+        return scattered
     }
 
     /// 원래 위치인지 확인
@@ -57,9 +68,15 @@ class BoxManager: ObservableObject {
             x: originalStackPosition.x,
             y: originalStackPosition.y + yOffset
         )
-        let threshold: CGFloat = 10
-        return abs(position.x - originalPos.x) < threshold &&
+        let threshold: CGFloat = 30  // 임계값을 30으로 증가
+        let isOriginal = abs(position.x - originalPos.x) < threshold &&
                abs(position.y - originalPos.y) < threshold
+
+        if !isOriginal {
+            print("  상자 \(stackIndex): 현재=(\(Int(position.x)), \(Int(position.y))) vs 원위치=(\(Int(originalPos.x)), \(Int(originalPos.y)))")
+        }
+
+        return isOriginal
     }
 
     /// 상자를 원래 위치로 되돌리기
@@ -72,6 +89,13 @@ class BoxManager: ObservableObject {
             )
             boxes[index].position = originalPos
             boxes[index].isInOriginalPosition = true
+
+            // 윈도우도 실제로 이동
+            if let window = boxWindows[id] {
+                window.setFrameOrigin(originalPos)
+            }
+
+            print("📦 상자 \(index) 원위치로 복귀: \(originalPos)")
         }
     }
 }

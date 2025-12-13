@@ -36,6 +36,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         boxWindows = manager.boxes.map { box in
             let window = BoxWindow(box: box, boxManager: manager)
             window.makeKeyAndOrderFront(nil)
+            // BoxManager에 윈도우 등록
+            manager.boxWindows[box.id] = window
             return window
         }
 
