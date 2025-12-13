@@ -98,4 +98,29 @@ class BoxManager: ObservableObject {
             print("📦 상자 \(index) 원위치로 복귀: \(originalPos)")
         }
     }
+
+    /// 모든 상자를 랜덤한 위치로 퍼트리기
+    func scatterBoxes() {
+        guard let screen = NSScreen.main else { return }
+        let screenFrame = screen.visibleFrame
+
+        print("🎲 상자를 퍼트립니다!")
+
+        for box in boxes {
+            // 화면 내 랜덤 위치 생성 (여백 100px)
+            let randomX = CGFloat.random(in: (screenFrame.minX + 100)...(screenFrame.maxX - 100))
+            let randomY = CGFloat.random(in: (screenFrame.minY + 100)...(screenFrame.maxY - 100))
+            let randomPosition = CGPoint(x: randomX, y: randomY)
+
+            // 상자 위치 업데이트
+            updateBoxPosition(id: box.id, to: randomPosition)
+
+            // 윈도우도 실제로 이동
+            if let window = boxWindows[box.id] {
+                window.setFrameOrigin(randomPosition)
+            }
+        }
+
+        print("🎁 \(boxes.count)개의 상자가 퍼트려졌습니다!")
+    }
 }

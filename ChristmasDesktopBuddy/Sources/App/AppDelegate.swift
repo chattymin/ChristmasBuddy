@@ -77,6 +77,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
+        // 선물 퍼트리기
+        menu.addItem(
+            NSMenuItem(
+                title: "선물 퍼트리기",
+                action: #selector(scatterBoxes),
+                keyEquivalent: "s"
+            )
+        )
+
+        menu.addItem(NSMenuItem.separator())
+
         // 캐릭터 표시/숨기기 (토글)
         toggleWindowMenuItem = NSMenuItem(
             title: "Visible: ✓ On",
@@ -130,5 +141,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             toggleWindowMenuItem?.title = "Visible: ✓ On"
             print("👀 캐릭터 표시")
         }
+    }
+
+    @objc private func scatterBoxes() {
+        boxManager?.scatterBoxes()
+        print("🎁 선물 상자를 퍼트렸습니다!")
     }
 }

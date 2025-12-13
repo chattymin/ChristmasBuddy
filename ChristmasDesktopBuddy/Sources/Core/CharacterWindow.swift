@@ -336,9 +336,11 @@ struct CharacterWindowContent: View {
                                 print("🏠 모든 상자 정리 완료! 좌측 하단으로 이동 중...")
                                 if let screen = NSScreen.main {
                                     let screenFrame = screen.visibleFrame
+                                    // 캐릭터가 화면 왼쪽 아래 구석에 오도록 윈도우 위치 조정
+                                    // 캐릭터가 잘리지 않도록 적절한 offset 사용
                                     let homePosition = CGPoint(
-                                        x: screenFrame.minX + 20,
-                                        y: screenFrame.minY + 20
+                                        x: screenFrame.minX - 70,
+                                        y: screenFrame.minY - 70
                                     )
                                     moveCharacterTo(position: homePosition, characterWindow: characterWindow) {
                                         print("✅ 상자 수집 완료!")
