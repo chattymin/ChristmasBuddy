@@ -57,11 +57,10 @@
 ### Installation Steps
 1. Download the DMG file from the link above
 2. Open the DMG and drag the app to your Applications folder
-3. Double-click **Install.command** in the DMG (removes quarantine automatically)
-   ```bash
-   ```
-4. On first launch, go to `System Settings > Privacy & Security` and allow the app to run
-5. Use the 🎄 icon in the menu bar to change characters and settings
+3. **Right-click** the app → Select **"Open"** → Click **"Open"** in the dialog
+4. Use the 🎄 icon in the menu bar to change characters and settings
+
+> **Note**: Since the app is not code-signed, macOS blocks it by default. Right-click → Open bypasses this for unsigned apps. You only need to do this once.
 
 ## 💻 System Requirements
 

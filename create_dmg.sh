@@ -33,60 +33,26 @@ cp -R "$APP_BUNDLE" dmg_temp/
 echo "🔗 Creating Applications symlink..."
 ln -s /Applications dmg_temp/Applications
 
-# Install.command 생성 (quarantine 속성 제거)
-echo "📝 Creating install script..."
-cat > dmg_temp/Install.command << 'INSTALLEOF'
-#!/bin/bash
-# Christmas Buddy Installer
-# 이 스크립트는 앱의 quarantine 속성을 제거합니다
+# README 추가 (중요한 설치 안내)
+cat > "dmg_temp/⚠️ 설치방법 (먼저 읽어주세요).txt" << 'EOF'
+🎄 Christmas Buddy v1.1.0 설치 방법
+=====================================
 
-APP_PATH="/Applications/ChristmasBuddy.app"
+1️⃣ ChristmasBuddy.app을 Applications 폴더로 드래그
 
-echo "🎄 Christmas Buddy 설치 중..."
-echo ""
+2️⃣ Applications 폴더에서 앱을 찾아서:
+   👉 앱을 "우클릭" (또는 Control + 클릭)
+   👉 "열기" 선택
+   👉 경고창에서 "열기" 버튼 클릭
 
-# quarantine 속성 제거
-if [ -d "$APP_PATH" ]; then
-    echo "🔓 보안 속성 제거 중..."
-    xattr -cr "$APP_PATH"
-    echo "✅ 완료!"
-    echo ""
-    echo "🚀 앱을 실행합니다..."
-    open "$APP_PATH"
-else
-    echo "❌ 앱을 먼저 Applications 폴더로 드래그해주세요!"
-    echo ""
-    echo "1. ChristmasBuddy.app을 Applications 폴더로 드래그"
-    echo "2. 이 스크립트를 다시 실행"
-fi
-INSTALLEOF
-chmod +x dmg_temp/Install.command
+⚠️ 일반 더블클릭으로는 열리지 않습니다!
+   반드시 우클릭 → 열기로 실행해주세요.
 
-# README 추가
-cat > dmg_temp/README.txt << 'EOF'
-🎄 Christmas Buddy v1.1.0
+💡 한 번만 이렇게 열면 그 다음부터는
+   일반 더블클릭으로도 실행됩니다!
 
-== 설치 방법 ==
-1. ChristmasBuddy.app을 Applications 폴더로 드래그하세요
-2. Install.command를 더블클릭하세요 (보안 속성 제거)
-3. 앱이 자동으로 실행됩니다!
-
-== 사용 방법 ==
-- 클릭: 정보 표시
-- 드래그: 위치 이동
-- 메뉴바 🎄: 캐릭터 변경 및 설정
-
-== 기능 ==
-✨ 3가지 캐릭터: 눈사람, 산타, 루돌프
-📊 배터리 및 시간 정보 표시
-💬 시간대별 랜덤 메시지
-💭 랜덤 인사 (15-30분마다)
-🌨️ 눈 내리기 효과 (모든 모니터)
-🖱️ 드래그 이동 가능
-
+=====================================
 GitHub: https://github.com/chattymin/ChristmasBuddy
-License: MIT
-
 Merry Christmas! 🎅
 EOF
 
