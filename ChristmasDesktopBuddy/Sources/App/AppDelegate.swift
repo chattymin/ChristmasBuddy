@@ -219,6 +219,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             characterWin.makeKeyAndOrderFront(nil)
             boxWindows.forEach { $0.makeKeyAndOrderFront(nil) }
             scatterBoxesMenuItem?.isEnabled = true
+            randomGreetingMenuItem?.isEnabled = true
             print("👀 캐릭터와 상자 모두 표시")
 
         case .characterOnly:
@@ -226,6 +227,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             characterWin.makeKeyAndOrderFront(nil)
             boxWindows.forEach { $0.orderOut(nil) }
             scatterBoxesMenuItem?.isEnabled = false
+            randomGreetingMenuItem?.isEnabled = true
             print("👤 캐릭터만 표시")
 
         case .hidden:
@@ -233,6 +235,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             characterWin.orderOut(nil)
             boxWindows.forEach { $0.orderOut(nil) }
             scatterBoxesMenuItem?.isEnabled = false
+            randomGreetingMenuItem?.isEnabled = false
             print("👻 모두 숨김")
         }
     }
