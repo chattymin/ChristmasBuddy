@@ -13,8 +13,8 @@
 </p>
 
 <p align="center">
-  <a href="https://chattymin.github.io/Christmas-On-Mac/">🌐 Website</a> •
-  <a href="https://github.com/chattymin/Christmas-On-Mac/releases/latest">⬇️ Download</a>
+  <a href="https://chattymin.github.io/ChristmasBuddy/">🌐 Website</a> •
+  <a href="https://github.com/chattymin/ChristmasBuddy/releases/latest">⬇️ Download</a>
 </p>
 
 ---
@@ -50,7 +50,7 @@
 ## 📥 Download & Installation
 
 ### Download
-👉 **[Download Latest Release](https://github.com/chattymin/Christmas-On-Mac/releases/latest)**
+👉 **[Download Latest Release](https://github.com/chattymin/ChristmasBuddy/releases/latest)**
 
 ### Installation Steps
 1. Download the DMG file from the link above
@@ -67,8 +67,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/chattymin/Christmas-On-Mac.git
-cd Christmas-On-Mac
+git clone https://github.com/chattymin/ChristmasBuddy.git
+cd ChristmasBuddy
 
 # Build the app
 ./build_app.sh
