@@ -153,7 +153,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 앱 정보
         menu.addItem(
             NSMenuItem(
-                title: "Christmas Desktop Buddy v1.0",
+                title: "Christmas Desktop Buddy v1.0.0",
                 action: nil,
                 keyEquivalent: ""
             )
