@@ -57,8 +57,12 @@
 ### Installation Steps
 1. Download the DMG file from the link above
 2. Open the DMG and drag the app to your Applications folder
-3. On first launch, go to `System Settings > Privacy & Security` and allow the app to run
-4. Use the 🎄 icon in the menu bar to change characters and settings
+3. **Important**: Run this command in Terminal to remove quarantine:
+   ```bash
+   xattr -cr /Applications/ChristmasDesktopBuddy.app
+   ```
+4. On first launch, go to `System Settings > Privacy & Security` and allow the app to run
+5. Use the 🎄 icon in the menu bar to change characters and settings
 
 ## 💻 System Requirements
 
