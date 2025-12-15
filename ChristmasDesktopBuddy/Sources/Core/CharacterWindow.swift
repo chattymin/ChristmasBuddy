@@ -121,6 +121,12 @@ struct CharacterWindowContent: View {
     @State private var idleFrameIndex = 0  // 현재 아이들 프레임 인덱스
     @State private var idleAnimationTimer: Timer?
 
+    // 랜덤 인사 관련
+    @ObservedObject private var greetingManager = RandomGreetingManager.shared
+    @State private var showRandomGreeting = false
+    @State private var randomGreetingMessage = ""
+    @State private var greetingDismissTimer: Timer?
+
     private let providers: [InfoProvider] = [
         BatteryProvider(),
         TimeProvider()
@@ -192,21 +198,82 @@ struct CharacterWindowContent: View {
                     Spacer()
                 }
             }
+
+            // 랜덤 인사 말풍선
+            if showRandomGreeting {
+                VStack {
+                    HStack {
+                        Spacer()
+                        RandomGreetingBubbleView(message: randomGreetingMessage)
+                            .transition(.scale.combined(with: .opacity))
+                            .padding()
+                        Spacer()
+                    }
+                    Spacer()
+                }
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea()
         .onAppear {
             startBoxCheckTimer()
             startIdleAnimation()
+            greetingManager.startTimer()
         }
         .onDisappear {
             checkBoxTimer?.invalidate()
             idleAnimationTimer?.invalidate()
+            greetingDismissTimer?.invalidate()
+        }
+        .onChange(of: greetingManager.shouldShowGreeting) { newValue in
+            if newValue {
+                showRandomGreetingBubble()
+            }
+        }
+    }
+
+    /// 랜덤 인사 말풍선 표시
+    private func showRandomGreetingBubble() {
+        // 이미 정보창이 열려있으면 표시하지 않음
+        guard !showInfo else {
+            greetingManager.hideGreeting()
+            return
+        }
+
+        randomGreetingMessage = greetingManager.greetingMessage
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            showRandomGreeting = true
+        }
+
+        // 5초 후 자동으로 숨기기
+        greetingDismissTimer?.invalidate()
+        greetingDismissTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
+            dismissRandomGreeting()
+        }
+        if let timer = greetingDismissTimer {
+            RunLoop.main.add(timer, forMode: .common)
+        }
+
+        greetingManager.hideGreeting()
+    }
+
+    /// 랜덤 인사 말풍선 숨기기
+    private func dismissRandomGreeting() {
+        greetingDismissTimer?.invalidate()
+        greetingDismissTimer = nil
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            showRandomGreeting = false
         }
     }
 
     /// 탭 핸들러
     private func handleTap() {
+        // 랜덤 인사 말풍선이 표시 중이면 숨기기
+        if showRandomGreeting {
+            dismissRandomGreeting()
+            return
+        }
+
         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             showInfo.toggle()
         }
