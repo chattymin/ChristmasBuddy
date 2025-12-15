@@ -1,4 +1,4 @@
-# 🎄 Christmas Desktop Buddy
+# 🎄 Christmas Buddy
 
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS-blue?style=flat-square" alt="Platform">
@@ -23,7 +23,7 @@
 
 ## ✨ About
 
-**Christmas Desktop Buddy** is a cute desktop companion app for macOS that brings Christmas spirit to your screen! A charming character lives on your desktop, delivering time-based messages and collecting scattered gift boxes.
+**Christmas Buddy** is a cute desktop companion app for macOS that brings Christmas spirit to your screen! A charming character lives on your desktop, delivering time-based messages and collecting scattered gift boxes.
 
 > 🤖 **100% Vibe Coded with Claude Code**
 >
@@ -57,9 +57,8 @@
 ### Installation Steps
 1. Download the DMG file from the link above
 2. Open the DMG and drag the app to your Applications folder
-3. **Important**: Run this command in Terminal to remove quarantine:
+3. Double-click **Install.command** in the DMG (removes quarantine automatically)
    ```bash
-   xattr -cr /Applications/ChristmasDesktopBuddy.app
    ```
 4. On first launch, go to `System Settings > Privacy & Security` and allow the app to run
 5. Use the 🎄 icon in the menu bar to change characters and settings
@@ -80,7 +79,7 @@ cd ChristmasBuddy
 ./build_app.sh
 
 # Run the app
-open ChristmasDesktopBuddy.app
+open ChristmasBuddy.app
 
 # Create DMG (for distribution)
 ./create_dmg.sh
@@ -89,7 +88,7 @@ open ChristmasDesktopBuddy.app
 ## 📁 Project Structure
 
 ```
-ChristmasDesktopBuddy/
+ChristmasBuddy/
 ├── Sources/
 │   ├── App/                  # App entry point
 │   ├── Core/                 # Core components

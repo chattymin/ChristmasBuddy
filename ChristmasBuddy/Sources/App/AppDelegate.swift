@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var menuBarImages: [NSImage] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        print("🎄 Christmas Desktop Buddy 시작!")
+        print("🎄 Christmas Buddy 시작!")
 
         // 상자 매니저 생성
         boxManager = BoxManager()
@@ -179,7 +179,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 앱 정보 (클릭 시 웹사이트로 이동)
         menu.addItem(
             NSMenuItem(
-                title: "Christmas Desktop Buddy v1.1.0",
+                title: "Christmas Buddy v1.1.0",
                 action: #selector(openWebsite),
                 keyEquivalent: ""
             )

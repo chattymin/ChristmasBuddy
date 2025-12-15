@@ -2,22 +2,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "ChristmasDesktopBuddy",
+    name: "ChristmasBuddy",
     platforms: [
         .macOS(.v13)
     ],
     products: [
         .executable(
-            name: "ChristmasDesktopBuddy",
-            targets: ["ChristmasDesktopBuddy"]
+            name: "ChristmasBuddy",
+            targets: ["ChristmasBuddy"]
         )
     ],
     dependencies: [],
     targets: [
         .executableTarget(
-            name: "ChristmasDesktopBuddy",
+            name: "ChristmasBuddy",
             dependencies: [],
-            path: "ChristmasDesktopBuddy/Sources",
+            path: "ChristmasBuddy/Sources",
             resources: [
                 .process("Resources")
             ]
