@@ -15,9 +15,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var visibilityMenuItems: [VisibilityMode: NSMenuItem] = [:]
     private var scatterBoxesMenuItem: NSMenuItem?
     private var randomGreetingMenuItem: NSMenuItem?
+    private var snowMenuItem: NSMenuItem?
     private var boxManager: BoxManager?
     private var boxWindows: [BoxWindow] = []
     private var currentVisibilityMode: VisibilityMode = .characterAndBoxes
+
+    // 눈 효과
+    private var snowWindow: SnowWindow?
+    private var isSnowEnabled = false
 
     // 메뉴바 아이콘 애니메이션
     private var menuBarAnimationTimer: Timer?
@@ -123,6 +128,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         randomGreetingMenuItem?.state = RandomGreetingManager.shared.isEnabled ? .on : .off
         menu.addItem(randomGreetingMenuItem!)
 
+        // 눈 효과 토글
+        snowMenuItem = NSMenuItem(
+            title: "눈 효과",
+            action: #selector(toggleSnow),
+            keyEquivalent: "n"
+        )
+        snowMenuItem?.state = .off
+        menu.addItem(snowMenuItem!)
+
         menu.addItem(NSMenuItem.separator())
 
         // Display 모드 선택 (서브메뉴)
@@ -220,6 +234,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             boxWindows.forEach { $0.makeKeyAndOrderFront(nil) }
             scatterBoxesMenuItem?.isEnabled = true
             randomGreetingMenuItem?.isEnabled = true
+            snowMenuItem?.isEnabled = true
+            // 눈 효과가 켜져있으면 다시 표시
+            if isSnowEnabled {
+                snowWindow?.makeKeyAndOrderFront(nil)
+            }
             print("👀 캐릭터와 상자 모두 표시")
 
         case .characterOnly:
@@ -228,6 +247,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             boxWindows.forEach { $0.orderOut(nil) }
             scatterBoxesMenuItem?.isEnabled = false
             randomGreetingMenuItem?.isEnabled = true
+            snowMenuItem?.isEnabled = true
+            // 눈 효과가 켜져있으면 다시 표시
+            if isSnowEnabled {
+                snowWindow?.makeKeyAndOrderFront(nil)
+            }
             print("👤 캐릭터만 표시")
 
         case .hidden:
@@ -236,6 +260,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             boxWindows.forEach { $0.orderOut(nil) }
             scatterBoxesMenuItem?.isEnabled = false
             randomGreetingMenuItem?.isEnabled = false
+            snowMenuItem?.isEnabled = false
+            // 눈 효과도 숨김
+            if isSnowEnabled {
+                snowWindow?.orderOut(nil)
+            }
             print("👻 모두 숨김")
         }
     }
@@ -263,6 +292,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         randomGreetingMenuItem?.state = RandomGreetingManager.shared.isEnabled ? .on : .off
     }
 
+    @objc private func toggleSnow() {
+        isSnowEnabled.toggle()
+        snowMenuItem?.state = isSnowEnabled ? .on : .off
+
+        if isSnowEnabled {
+            // 눈 효과 시작
+            if snowWindow == nil {
+                snowWindow = SnowWindow()
+            }
+            snowWindow?.makeKeyAndOrderFront(nil)
+            print("❄️ 눈 효과 시작")
+        } else {
+            // 눈 효과 종료
+            snowWindow?.orderOut(nil)
+            print("❄️ 눈 효과 종료")
+        }
+    }
+
     @objc private func openWebsite() {
         if let url = URL(string: "https://chattymin.github.io/ChristmasBuddy/") {
             NSWorkspace.shared.open(url)
@@ -276,6 +323,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                let image = NSImage(contentsOf: url) {
                 // 메뉴바에 맞는 크기로 설정
                 image.size = NSSize(width: 18, height: 18)
+                image.isTemplate = false
                 menuBarImages.append(image)
             }
         }
