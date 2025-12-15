@@ -1,0 +1,20 @@
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 눈 쌓인 바닥 -->
+  <ellipse cx="9" cy="16.5" rx="7" ry="1.5" fill="#FFFFFF"/>
+
+  <!-- 트리 -->
+  <polygon points="9,2 4,8 6,8 3,12 6,12 2,16 16,16 12,12 15,12 12,8 14,8" fill="#228B22"/>
+
+  <!-- 트리 장식 -->
+  <circle cx="9" cy="4" r="1" fill="#FFD700"/>
+  <circle cx="7" cy="9" r="0.8" fill="#FF0000"/>
+  <circle cx="11" cy="11" r="0.8" fill="#FF0000"/>
+  <circle cx="8" cy="13" r="0.8" fill="#FFD700"/>
+
+  <!-- 눈송이 프레임 4 - 일부는 바닥에, 새로운 눈 위에서 -->
+  <circle cx="3" cy="9" r="0.8" fill="#FFFFFF"/>
+  <circle cx="15" cy="11" r="0.6" fill="#FFFFFF"/>
+  <circle cx="5" cy="13" r="0.5" fill="#FFFFFF"/>
+  <circle cx="16" cy="4" r="0.6" fill="#FFFFFF"/>
+  <circle cx="1" cy="2" r="0.7" fill="#FFFFFF"/>
+</svg>

@@ -18,6 +18,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var boxWindows: [BoxWindow] = []
     private var currentVisibilityMode: VisibilityMode = .characterAndBoxes
 
+    // 메뉴바 아이콘 애니메이션
+    private var menuBarAnimationTimer: Timer?
+    private var menuBarFrameIndex = 0
+    private var menuBarImages: [NSImage] = []
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🎄 Christmas Desktop Buddy 시작!")
 
@@ -63,11 +68,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// 메뉴바 설정
     private func setupMenuBar() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
-        if let button = statusItem?.button {
-            button.title = "🎄"
+        // 메뉴바 아이콘 이미지 로드
+        loadMenuBarImages()
+
+        if let button = statusItem?.button, let firstImage = menuBarImages.first {
+            button.image = firstImage
+            button.image?.isTemplate = false
         }
+
+        // 메뉴바 아이콘 애니메이션 시작
+        startMenuBarAnimation()
 
         let menu = NSMenu()
         // 메뉴 아이템 활성화/비활성화를 수동으로 제어
@@ -229,5 +241,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         boxManager?.scatterBoxes()
         print("🎁 선물 상자를 퍼트렸습니다!")
+    }
+
+    /// 메뉴바 아이콘 이미지 로드
+    private func loadMenuBarImages() {
+        for i in 1...6 {
+            if let url = Bundle.module.url(forResource: "menubar-tree-\(i)", withExtension: "svg"),
+               let image = NSImage(contentsOf: url) {
+                // 메뉴바에 맞는 크기로 설정
+                image.size = NSSize(width: 18, height: 18)
+                menuBarImages.append(image)
+            }
+        }
+
+        // 이미지 로드 실패 시 기본 이모지 사용
+        if menuBarImages.isEmpty {
+            print("⚠️ 메뉴바 아이콘 이미지 로드 실패")
+        } else {
+            print("✅ 메뉴바 아이콘 이미지 \(menuBarImages.count)개 로드 완료")
+        }
+    }
+
+    /// 메뉴바 아이콘 애니메이션 시작
+    private func startMenuBarAnimation() {
+        guard !menuBarImages.isEmpty else {
+            // 이미지가 없으면 기본 이모지 사용
+            statusItem?.button?.title = "🎄"
+            return
+        }
+
+        let timer = Timer(timeInterval: 0.3, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            self.menuBarFrameIndex = (self.menuBarFrameIndex + 1) % self.menuBarImages.count
+            self.statusItem?.button?.image = self.menuBarImages[self.menuBarFrameIndex]
+        }
+        // 메뉴가 열려있어도 애니메이션이 계속 실행되도록 common 모드에 추가
+        RunLoop.main.add(timer, forMode: .common)
+        menuBarAnimationTimer = timer
     }
 }
