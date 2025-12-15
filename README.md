@@ -1,99 +1,124 @@
-# Christmas Desktop Buddy 🎄
+# 🎄 Christmas Desktop Buddy
 
-맥OS 데스크탑 위에 떠다니는 귀여운 크리스마스 캐릭터!
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-macOS-blue?style=flat-square" alt="Platform">
+  <img src="https://img.shields.io/badge/macOS-13.0+-green?style=flat-square" alt="macOS Version">
+  <img src="https://img.shields.io/badge/Swift-5.9-orange?style=flat-square" alt="Swift">
+  <img src="https://img.shields.io/badge/Built%20with-Claude%20Code-blueviolet?style=flat-square" alt="Built with Claude Code">
+</p>
 
-![Christmas Desktop Buddy](screenshot.png)
+<p align="center">
+  <strong>🌐 Language / 언어 / 言語</strong><br>
+  <a href="#english">English</a> • <a href="README_ko.md">한국어</a> • <a href="README_ja.md">日本語</a>
+</p>
 
-## 기능 ✨
+<p align="center">
+  <a href="https://chattymin.github.io/Christmas-On-Mac/">🌐 Website</a> •
+  <a href="https://github.com/chattymin/Christmas-On-Mac/releases/latest">⬇️ Download</a>
+</p>
 
-- **떠다니는 캐릭터**: 데스크탑 위에 작은 크리스마스 캐릭터가 떠다닙니다
-- **3가지 캐릭터**: 눈사람 ⛄, 산타 🎅, 루돌프 🦌
-- **정보 표시**: 클릭하면 배터리 상태, 현재 시간, 랜덤 멘트 표시
-- **드래그 이동**: 캐릭터를 원하는 위치로 드래그 가능
-- **항상 최상위**: 다른 창 위에 항상 표시
+---
 
-## 다운로드 및 설치 📥
+<a name="english"></a>
 
-### 사용자용 (일반 사용자)
+## ✨ About
 
-1. [Releases 페이지](https://github.com/yourusername/christmas-desktop-buddy/releases)에서 최신 DMG 파일 다운로드
-2. DMG를 열고 `ChristmasDesktopBuddy.app`을 `Applications` 폴더로 드래그
-3. Applications 폴더에서 앱 실행
-4. 첫 실행 시 보안 경고가 나타나면:
-   - **시스템 설정** → **개인 정보 보호 및 보안** → **"확인 없이 열기"** 클릭
+**Christmas Desktop Buddy** is a cute desktop companion app for macOS that brings Christmas spirit to your screen! A charming character lives on your desktop, delivering time-based messages and collecting scattered gift boxes.
 
-### 개발자용 (소스코드 빌드)
+> 🤖 **100% Vibe Coded with Claude Code**
+>
+> This entire project was created through vibe coding with [Claude Code](https://claude.ai/download) - Anthropic's official CLI for Claude. From concept to implementation, every line of code was generated through natural conversation with AI.
+
+## 🎬 Preview
+
+<p align="center">
+  <strong>⛄ Snowman</strong> • <strong>🎅 Santa</strong> • <strong>🦌 Rudolph</strong>
+</p>
+
+## 🎁 Features
+
+| Feature | Description |
+|---------|-------------|
+| 💬 **Time-based Messages** | Receive different cute messages based on the time of day (morning, lunch, afternoon, evening, night) |
+| 🎁 **Gift Box Collection** | Scatter gift boxes across the screen and watch your character collect them |
+| 💃 **Idle Animation** | Characters move and breathe like they're alive |
+| 😵‍💫 **Dizzy Reaction** | Drag the character for too long and they'll get dizzy! |
+| 🔋 **Battery Alert** | Get notified when your battery is low |
+| ❄️ **Animated Menu Bar** | Watch snow fall on the Christmas tree in your menu bar |
+| 🎭 **Multiple Characters** | Choose between Snowman, Santa, and Rudolph |
+
+## 📥 Download & Installation
+
+### Download
+👉 **[Download Latest Release](https://github.com/chattymin/Christmas-On-Mac/releases/latest)**
+
+### Installation Steps
+1. Download the DMG file from the link above
+2. Open the DMG and drag the app to your Applications folder
+3. On first launch, go to `System Settings > Privacy & Security` and allow the app to run
+4. Use the 🎄 icon in the menu bar to change characters and settings
+
+## 💻 System Requirements
+
+- **macOS 13.0 (Ventura)** or later
+- Apple Silicon & Intel supported
+
+## 🛠️ Build from Source
 
 ```bash
-# Swift Package Manager로 빌드
-swift build
+# Clone the repository
+git clone https://github.com/chattymin/Christmas-On-Mac.git
+cd Christmas-On-Mac
 
-# 실행
-swift run
-
-# .app 번들 생성
+# Build the app
 ./build_app.sh
 
-# DMG 생성 (배포용)
+# Run the app
+open ChristmasDesktopBuddy.app
+
+# Create DMG (for distribution)
 ./create_dmg.sh
 ```
 
-## Xcode로 빌드
-
-```bash
-# Xcode 프로젝트 생성
-swift package generate-xcodeproj
-
-# Xcode에서 열기
-open ChristmasDesktopBuddy.xcodeproj
-```
-
-## 기술 스택 💻
-
-- Swift 5.9+
-- SwiftUI
-- AppKit (macOS)
-- macOS 13.0+
-
-## 프로젝트 구조 📁
+## 📁 Project Structure
 
 ```
 ChristmasDesktopBuddy/
 ├── Sources/
-│   ├── App/                  # 앱 진입점
-│   ├── Core/                 # 코어 컴포넌트
-│   ├── Features/             # 기능별 모듈
-│   │   ├── InfoDisplay/      # 정보 표시 시스템
-│   │   └── Message/          # 메시지 시스템
-│   ├── Models/               # 데이터 모델
-│   └── Resources/            # 리소스 (SVG 캐릭터)
+│   ├── App/                  # App entry point
+│   ├── Core/                 # Core components
+│   ├── Features/             # Feature modules
+│   │   ├── InfoDisplay/      # Info display system
+│   │   ├── Message/          # Message system
+│   │   └── Box/              # Gift box system
+│   ├── Models/               # Data models
+│   └── Resources/            # Resources (SVG characters)
 └── Package.swift
 ```
 
-## 확장 가능성 🚀
+## 🤖 About Vibe Coding
 
-InfoProvider 프로토콜을 구현하여 새로운 정보를 쉽게 추가할 수 있습니다:
+This project is a showcase of **vibe coding** - a new development paradigm where you describe what you want in natural language and AI generates the code.
 
-```swift
-class CustomProvider: InfoProvider {
-    var icon: String { "📊" }
-    var title: String { "Custom Info" }
-    var priority: Int { 3 }
+Every feature in this app was created by simply describing the desired functionality to Claude Code:
+- "Add a snowman character that moves around"
+- "Make the character collect gift boxes"
+- "Add time-based greeting messages"
+- "Create an animated snow-falling tree icon for the menu bar"
 
-    func getValue() async -> String {
-        return "Custom Value"
-    }
-}
-```
+No manual coding required - just vibes! ✨
 
-## Phase 2 계획 🎯
+## 📄 License
 
-- [ ] 중력 물리 엔진 (창/Dock에 착지)
-- [ ] 자동 이동 AI
-- [ ] 캘린더 연동 (미팅 정보)
-- [ ] 날씨 정보
-- [ ] 애니메이션 추가
+MIT License - See [LICENSE](LICENSE) for details.
 
-## 라이선스 📝
+## 🙏 Credits
 
-MIT License
+- Built 100% with [Claude Code](https://claude.ai/download) by Anthropic
+- Made with ❤️ for Christmas
+
+---
+
+<p align="center">
+  🎄 Merry Christmas! 🎄
+</p>
