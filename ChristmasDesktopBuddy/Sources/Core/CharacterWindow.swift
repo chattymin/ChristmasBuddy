@@ -21,7 +21,7 @@ class CharacterWindow: NSWindow {
 
         if let screen = NSScreen.main {
             let screenFrame = screen.visibleFrame
-            initialX = screenFrame.minX - 70
+            initialX = screenFrame.minX - 20
             initialY = screenFrame.minY - 70
         }
 
@@ -376,7 +376,7 @@ struct CharacterWindowContent: View {
                                     // 캐릭터가 화면 왼쪽 아래 구석에 오도록 윈도우 위치 조정
                                     // 캐릭터가 잘리지 않도록 적절한 offset 사용
                                     let homePosition = CGPoint(
-                                        x: screenFrame.minX - 70,
+                                        x: screenFrame.minX - 20,
                                         y: screenFrame.minY - 70
                                     )
                                     moveCharacterTo(position: homePosition, characterWindow: characterWindow) {
