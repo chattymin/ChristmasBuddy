@@ -382,6 +382,7 @@ struct CharacterWindowContent: View {
                                     moveCharacterTo(position: homePosition, characterWindow: characterWindow) {
                                         print("✅ 상자 수집 완료!")
                                         isCollectingBox = false
+                                        facingLeft = false  // 오른쪽을 바라보도록
                                     }
                                 } else {
                                     isCollectingBox = false
