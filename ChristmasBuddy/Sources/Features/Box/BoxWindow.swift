@@ -91,7 +91,7 @@ struct BoxView: View {
     }
 
     private func loadSVG() -> Data? {
-        guard let url = Bundle.module.url(forResource: "gift-box", withExtension: "svg") else {
+        guard let url = ResourceBundle.bundle.url(forResource: "gift-box", withExtension: "svg") else {
             print("❌ gift-box SVG not found")
             return nil
         }

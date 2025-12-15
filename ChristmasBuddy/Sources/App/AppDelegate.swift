@@ -317,17 +317,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// 메뉴바 아이콘 이미지 로드
     private func loadMenuBarImages() {
         for i in 1...6 {
-            if let url = Bundle.module.url(forResource: "menubar-tree-\(i)", withExtension: "svg"),
-               let image = NSImage(contentsOf: url) {
-                // 메뉴바에 맞는 크기로 설정
-                image.size = NSSize(width: 18, height: 18)
-                menuBarImages.append(image)
+            if let url = ResourceBundle.bundle.url(forResource: "menubar-tree-\(i)", withExtension: "svg") {
+                print("📍 SVG 경로 발견: \(url.path)")
+                if let image = NSImage(contentsOf: url) {
+                    // 메뉴바에 맞는 크기로 설정
+                    image.size = NSSize(width: 18, height: 18)
+                    image.isTemplate = false  // 컬러 이미지로 사용
+                    menuBarImages.append(image)
+                    print("✅ menubar-tree-\(i).svg 로드 성공")
+                } else {
+                    print("❌ menubar-tree-\(i).svg NSImage 생성 실패")
+                }
+            } else {
+                print("❌ menubar-tree-\(i).svg 파일을 찾을 수 없음")
             }
         }
 
         // 이미지 로드 실패 시 기본 이모지 사용
         if menuBarImages.isEmpty {
-            print("⚠️ 메뉴바 아이콘 이미지 로드 실패")
+            print("⚠️ 메뉴바 아이콘 이미지 로드 실패 - 기본 이모지 사용")
         } else {
             print("✅ 메뉴바 아이콘 이미지 \(menuBarImages.count)개 로드 완료")
         }

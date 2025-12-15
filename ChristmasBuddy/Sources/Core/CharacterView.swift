@@ -44,13 +44,12 @@ struct CharacterView: View {
 
     /// SVG 파일 로드
     private func loadSVG(fileName: String) -> Data? {
-        // Bundle.module에서 리소스 찾기
-        guard let url = Bundle.module.url(forResource: fileName.replacingOccurrences(of: ".svg", with: ""), withExtension: "svg") else {
+        // ResourceBundle에서 리소스 찾기
+        guard let url = ResourceBundle.bundle.url(forResource: fileName.replacingOccurrences(of: ".svg", with: ""), withExtension: "svg") else {
             print("❌ SVG not found: \(fileName)")
             return nil
         }
 
-        print("✅ Found SVG at: \(url.path)")
         return try? Data(contentsOf: url)
     }
 
