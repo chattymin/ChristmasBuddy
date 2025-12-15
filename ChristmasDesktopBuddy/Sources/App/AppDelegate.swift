@@ -162,11 +162,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        // 앱 정보
+        // 앱 정보 (클릭 시 웹사이트로 이동)
         menu.addItem(
             NSMenuItem(
                 title: "Christmas Desktop Buddy v1.0.0",
-                action: nil,
+                action: #selector(openWebsite),
                 keyEquivalent: ""
             )
         )
@@ -261,6 +261,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func toggleRandomGreeting() {
         RandomGreetingManager.shared.toggle()
         randomGreetingMenuItem?.state = RandomGreetingManager.shared.isEnabled ? .on : .off
+    }
+
+    @objc private func openWebsite() {
+        if let url = URL(string: "https://chattymin.github.io/ChristmasBuddy/") {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     /// 메뉴바 아이콘 이미지 로드
