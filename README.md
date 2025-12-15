@@ -46,6 +46,8 @@
 | 🔋 **Battery Alert** | Get notified when your battery is low |
 | ❄️ **Animated Menu Bar** | Watch snow fall on the Christmas tree in your menu bar |
 | 🎭 **Multiple Characters** | Choose between Snowman, Santa, and Rudolph |
+| 💭 **Random Greetings** | Character randomly says hello every 15-30 minutes |
+| 🌨️ **Snow Effect** | Beautiful snow falling effect across all your monitors |
 
 ## 📥 Download & Installation
 

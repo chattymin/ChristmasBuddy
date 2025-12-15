@@ -179,7 +179,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 앱 정보 (클릭 시 웹사이트로 이동)
         menu.addItem(
             NSMenuItem(
-                title: "Christmas Desktop Buddy v1.0.0",
+                title: "Christmas Desktop Buddy v1.1.0",
                 action: #selector(openWebsite),
                 keyEquivalent: ""
             )
