@@ -1,16 +1,66 @@
 import SwiftUI
 import AppKit
 
+/// 모든 화면의 눈 효과를 관리하는 매니저
+class SnowWindowManager {
+    private var snowWindows: [NSScreen: SnowWindow] = [:]
+
+    /// 모든 화면에 눈 효과 시작
+    func showSnow() {
+        // 기존 윈도우 정리
+        hideSnow()
+
+        // 연결된 모든 화면에 눈 윈도우 생성
+        for screen in NSScreen.screens {
+            let window = SnowWindow(screen: screen)
+            window.makeKeyAndOrderFront(nil)
+            snowWindows[screen] = window
+        }
+
+        print("❄️ 눈 효과 시작 - \(snowWindows.count)개 화면")
+    }
+
+    /// 모든 화면에서 눈 효과 숨김
+    func hideSnow() {
+        for window in snowWindows.values {
+            window.orderOut(nil)
+        }
+        snowWindows.removeAll()
+        print("❄️ 눈 효과 종료")
+    }
+
+    /// 화면 구성 변경 시 업데이트
+    func updateScreens() {
+        let currentScreens = Set(NSScreen.screens)
+        let existingScreens = Set(snowWindows.keys)
+
+        // 제거된 화면의 윈도우 정리
+        for screen in existingScreens.subtracting(currentScreens) {
+            snowWindows[screen]?.orderOut(nil)
+            snowWindows.removeValue(forKey: screen)
+        }
+
+        // 새로 추가된 화면에 윈도우 생성
+        for screen in currentScreens.subtracting(existingScreens) {
+            let window = SnowWindow(screen: screen)
+            window.makeKeyAndOrderFront(nil)
+            snowWindows[screen] = window
+        }
+
+        // 기존 화면의 프레임 업데이트
+        for (screen, window) in snowWindows {
+            window.setFrame(screen.frame, display: true)
+        }
+    }
+}
+
 /// 눈 내리는 효과를 표시하는 전체 화면 투명 윈도우
 class SnowWindow: NSWindow {
     private var snowView: NSHostingView<SnowEffectView>?
 
-    init() {
-        // 메인 화면 전체를 덮는 윈도우
-        let screenFrame = NSScreen.main?.frame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
-
+    init(screen: NSScreen) {
         super.init(
-            contentRect: screenFrame,
+            contentRect: screen.frame,
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
@@ -49,13 +99,6 @@ class SnowWindow: NSWindow {
 
         self.contentView = hostingView
         self.snowView = hostingView
-    }
-
-    /// 화면 크기 변경 시 윈도우 크기 업데이트
-    func updateFrame() {
-        if let screenFrame = NSScreen.main?.frame {
-            self.setFrame(screenFrame, display: true)
-        }
     }
 }
 

@@ -21,7 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var currentVisibilityMode: VisibilityMode = .characterAndBoxes
 
     // 눈 효과
-    private var snowWindow: SnowWindow?
+    private var snowManager: SnowWindowManager?
     private var isSnowEnabled = false
 
     // 메뉴바 아이콘 애니메이션
@@ -237,7 +237,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             snowMenuItem?.isEnabled = true
             // 눈 효과가 켜져있으면 다시 표시
             if isSnowEnabled {
-                snowWindow?.makeKeyAndOrderFront(nil)
+                snowManager?.showSnow()
             }
             print("👀 캐릭터와 상자 모두 표시")
 
@@ -250,7 +250,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             snowMenuItem?.isEnabled = true
             // 눈 효과가 켜져있으면 다시 표시
             if isSnowEnabled {
-                snowWindow?.makeKeyAndOrderFront(nil)
+                snowManager?.showSnow()
             }
             print("👤 캐릭터만 표시")
 
@@ -263,7 +263,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             snowMenuItem?.isEnabled = false
             // 눈 효과도 숨김
             if isSnowEnabled {
-                snowWindow?.orderOut(nil)
+                snowManager?.hideSnow()
             }
             print("👻 모두 숨김")
         }
@@ -298,15 +298,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if isSnowEnabled {
             // 눈 효과 시작
-            if snowWindow == nil {
-                snowWindow = SnowWindow()
+            if snowManager == nil {
+                snowManager = SnowWindowManager()
             }
-            snowWindow?.makeKeyAndOrderFront(nil)
-            print("❄️ 눈 효과 시작")
+            snowManager?.showSnow()
         } else {
             // 눈 효과 종료
-            snowWindow?.orderOut(nil)
-            print("❄️ 눈 효과 종료")
+            snowManager?.hideSnow()
         }
     }
 
@@ -323,7 +321,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                let image = NSImage(contentsOf: url) {
                 // 메뉴바에 맞는 크기로 설정
                 image.size = NSSize(width: 18, height: 18)
-                image.isTemplate = false
                 menuBarImages.append(image)
             }
         }
