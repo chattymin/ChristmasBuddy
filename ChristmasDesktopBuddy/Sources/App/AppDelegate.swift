@@ -14,6 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var visibilityMenuItems: [VisibilityMode: NSMenuItem] = [:]
     private var scatterBoxesMenuItem: NSMenuItem?
+    private var randomGreetingMenuItem: NSMenuItem?
     private var boxManager: BoxManager?
     private var boxWindows: [BoxWindow] = []
     private var currentVisibilityMode: VisibilityMode = .characterAndBoxes
@@ -110,6 +111,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             keyEquivalent: "s"
         )
         menu.addItem(scatterBoxesMenuItem!)
+
+        menu.addItem(NSMenuItem.separator())
+
+        // 랜덤 인사 기능 토글
+        randomGreetingMenuItem = NSMenuItem(
+            title: "랜덤 인사",
+            action: #selector(toggleRandomGreeting),
+            keyEquivalent: "r"
+        )
+        randomGreetingMenuItem?.state = RandomGreetingManager.shared.isEnabled ? .on : .off
+        menu.addItem(randomGreetingMenuItem!)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -241,6 +253,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         boxManager?.scatterBoxes()
         print("🎁 선물 상자를 퍼트렸습니다!")
+    }
+
+    @objc private func toggleRandomGreeting() {
+        RandomGreetingManager.shared.toggle()
+        randomGreetingMenuItem?.state = RandomGreetingManager.shared.isEnabled ? .on : .off
     }
 
     /// 메뉴바 아이콘 이미지 로드
