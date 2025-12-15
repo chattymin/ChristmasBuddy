@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Desktop Buddy - Mac용 크리스마스 데스크탑 친구</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 눈 내리는 효과 */
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        /* 다운로드 버튼 */
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #c41e3a, #a01830);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.4);
+            transition: all 0.3s ease;
+            border: 2px solid #ff6b6b;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.6);
+        }
+
+        .download-info {
+            margin-top: 15px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        /* 미리보기 섹션 */
+        .preview {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .preview h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+
+        .characters {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .character {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .character:hover {
+            transform: scale(1.05);
+        }
+
+        .character-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .character-name {
+            font-weight: 700;
+        }
+
+        /* 기능 섹션 */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .feature p {
+            opacity: 0.85;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        /* 설치 방법 */
+        .install {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .install h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+
+        .install-steps {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: #c41e3a;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            padding-top: 3px;
+        }
+
+        .step-content code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* 푸터 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 요구사항 */
+        .requirements {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .requirements h3 {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .title {
+                font-size: 1.8em;
+            }
+
+            .characters {
+                gap: 20px;
+            }
+
+            .character-icon {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 눈 내리는 효과 -->
+    <div class="snowflakes" id="snowflakes"></div>
+
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <div class="logo">🎄</div>
+            <h1 class="title">Christmas Desktop Buddy</h1>
+            <p class="subtitle">당신의 Mac 데스크탑에 크리스마스 친구를 초대하세요!</p>
+
+            <a href="https://github.com/chattymin/Christmas-On-Mac/releases/latest" class="download-btn">
+                 다운로드
+            </a>
+            <p class="download-info">macOS 13.0 이상 지원 | Apple Silicon & Intel</p>
+        </header>
+
+        <!-- 캐릭터 미리보기 -->
+        <section class="preview">
+            <h2>귀여운 캐릭터들</h2>
+            <div class="characters">
+                <div class="character">
+                    <div class="character-icon">⛄</div>
+                    <div class="character-name">눈사람</div>
+                </div>
+                <div class="character">
+                    <div class="character-icon">🎅</div>
+                    <div class="character-name">산타</div>
+                </div>
+                <div class="character">
+                    <div class="character-icon">🦌</div>
+                    <div class="character-name">루돌프</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 기능 소개 -->
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">💬</div>
+                <h3>시간대별 메시지</h3>
+                <p>아침, 점심, 저녁 시간에 맞는 귀여운 메시지를 전해드려요</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎁</div>
+                <h3>선물 상자 수집</h3>
+                <p>화면에 흩어진 선물 상자를 캐릭터가 열심히 정리해요</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💃</div>
+                <h3>아이들 애니메이션</h3>
+                <p>캐릭터가 살아있는 것처럼 움직여요</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">😵‍💫</div>
+                <h3>어지러움 반응</h3>
+                <p>캐릭터를 오래 드래그하면 어지러워해요</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔋</div>
+                <h3>배터리 알림</h3>
+                <p>배터리가 부족하면 알려드려요</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">❄️</div>
+                <h3>메뉴바 애니메이션</h3>
+                <p>메뉴바에서 눈 내리는 트리를 볼 수 있어요</p>
+            </div>
+        </section>
+
+        <!-- 설치 방법 -->
+        <section class="install">
+            <h2>설치 방법</h2>
+            <div class="install-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        위의 다운로드 버튼을 클릭하여 DMG 파일을 다운로드하세요
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        DMG 파일을 열고 앱을 Applications 폴더로 드래그하세요
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        처음 실행 시 <code>시스템 설정 > 개인정보 보호 및 보안</code>에서 앱 실행을 허용하세요
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        메뉴바의 🎄 아이콘으로 캐릭터 변경 및 설정을 조절하세요
+                    </div>
+                </div>
+            </div>
+
+            <div class="requirements">
+                <h3>시스템 요구사항</h3>
+                <p>macOS 13.0 (Ventura) 이상</p>
+            </div>
+        </section>
+
+        <!-- 푸터 -->
+        <footer class="footer">
+            <p>Made with ❤️ for Christmas</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/chattymin/Christmas-On-Mac">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 눈 내리는 효과
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            const snowflakeChars = ['❄', '❅', '❆', '✻', '✼', '❉'];
+
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.textContent = snowflakeChars[Math.floor(Math.random() * snowflakeChars.length)];
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+                snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                snowflake.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(snowflake);
+            }
+        }
+
+        createSnowflakes();
+    </script>
+</body>
+</html>
