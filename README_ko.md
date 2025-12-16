@@ -1,4 +1,4 @@
-# 🎄 Christmas Buddy
+# 🎄 Christmas Desktop Buddy
 
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS-blue?style=flat-square" alt="Platform">
@@ -23,7 +23,7 @@
 
 ## ✨ 소개
 
-**Christmas Buddy**는 여러분의 Mac 데스크탑에 크리스마스 분위기를 선사하는 귀여운 데스크탑 동반자 앱입니다! 사랑스러운 캐릭터가 데스크탑 위에 살면서, 시간대별 메시지를 전달하고 흩어진 선물 상자를 수집합니다.
+**Christmas Desktop Buddy**는 여러분의 Mac 데스크탑에 크리스마스 분위기를 선사하는 귀여운 데스크탑 동반자 앱입니다! 사랑스러운 캐릭터가 데스크탑 위에 살면서, 시간대별 메시지를 전달하고 흩어진 선물 상자를 수집합니다.
 
 > 🤖 **Claude Code로 100% 바이브 코딩**
 >
@@ -47,7 +47,7 @@
 | ❄️ **메뉴바 애니메이션** | 메뉴바에서 눈 내리는 크리스마스 트리를 볼 수 있어요 |
 | 🎭 **다양한 캐릭터** | 눈사람, 산타, 루돌프 중에서 선택하세요 |
 | 💭 **랜덤 인사** | 캐릭터가 15-30분마다 랜덤하게 인사해요 |
-| 🌨️ **눈 내리기 효과** | 모든 모니터에 아름다운 눈이 내려요 |
+| 🌨️ **눈 내리기 효과** | 연결된 모든 모니터에 아름다운 눈이 내려요 |
 
 ## 📥 다운로드 및 설치
 
@@ -78,7 +78,7 @@ cd ChristmasBuddy
 ./build_app.sh
 
 # 앱 실행
-open ChristmasBuddy.app
+open ChristmasDesktopBuddy.app
 
 # DMG 생성 (배포용)
 ./create_dmg.sh
@@ -87,13 +87,14 @@ open ChristmasBuddy.app
 ## 📁 프로젝트 구조
 
 ```
-ChristmasBuddy/
+ChristmasDesktopBuddy/
 ├── Sources/
 │   ├── App/                  # 앱 진입점
 │   ├── Core/                 # 코어 컴포넌트
 │   ├── Features/             # 기능 모듈
 │   │   ├── InfoDisplay/      # 정보 표시 시스템
 │   │   ├── Message/          # 메시지 시스템
+│   │   ├── Snow/             # 눈 효과 시스템
 │   │   └── Box/              # 선물 상자 시스템
 │   ├── Models/               # 데이터 모델
 │   └── Resources/            # 리소스 (SVG 캐릭터)
@@ -109,6 +110,7 @@ ChristmasBuddy/
 - "캐릭터가 선물 상자를 수집하게 해줘"
 - "시간대별 인사 메시지를 추가해줘"
 - "메뉴바에 눈 내리는 트리 애니메이션 아이콘을 만들어줘"
+- "연결된 모든 모니터에 눈이 내리게 해줘"
 
 직접 코딩은 필요 없어요 - 그냥 바이브만 있으면 돼요! ✨
 

@@ -1,4 +1,4 @@
-# 🎄 Christmas Buddy
+# 🎄 Christmas Desktop Buddy
 
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS-blue?style=flat-square" alt="Platform">
@@ -23,7 +23,7 @@
 
 ## ✨ About
 
-**Christmas Buddy** is a cute desktop companion app for macOS that brings Christmas spirit to your screen! A charming character lives on your desktop, delivering time-based messages and collecting scattered gift boxes.
+**Christmas Desktop Buddy** is a cute desktop companion app for macOS that brings Christmas spirit to your screen! A charming character lives on your desktop, delivering time-based messages and collecting scattered gift boxes.
 
 > 🤖 **100% Vibe Coded with Claude Code**
 >
@@ -47,7 +47,7 @@
 | ❄️ **Animated Menu Bar** | Watch snow fall on the Christmas tree in your menu bar |
 | 🎭 **Multiple Characters** | Choose between Snowman, Santa, and Rudolph |
 | 💭 **Random Greetings** | Character randomly says hello every 15-30 minutes |
-| 🌨️ **Snow Effect** | Beautiful snow falling effect across all your monitors |
+| 🌨️ **Snow Effect** | Beautiful snow falling effect across ALL connected monitors |
 
 ## 📥 Download & Installation
 
@@ -78,7 +78,7 @@ cd ChristmasBuddy
 ./build_app.sh
 
 # Run the app
-open ChristmasBuddy.app
+open ChristmasDesktopBuddy.app
 
 # Create DMG (for distribution)
 ./create_dmg.sh
@@ -87,13 +87,14 @@ open ChristmasBuddy.app
 ## 📁 Project Structure
 
 ```
-ChristmasBuddy/
+ChristmasDesktopBuddy/
 ├── Sources/
 │   ├── App/                  # App entry point
 │   ├── Core/                 # Core components
 │   ├── Features/             # Feature modules
 │   │   ├── InfoDisplay/      # Info display system
 │   │   ├── Message/          # Message system
+│   │   ├── Snow/             # Snow effect system
 │   │   └── Box/              # Gift box system
 │   ├── Models/               # Data models
 │   └── Resources/            # Resources (SVG characters)
@@ -109,6 +110,7 @@ Every feature in this app was created by simply describing the desired functiona
 - "Make the character collect gift boxes"
 - "Add time-based greeting messages"
 - "Create an animated snow-falling tree icon for the menu bar"
+- "Make snow fall on all connected monitors"
 
 No manual coding required - just vibes! ✨
 
