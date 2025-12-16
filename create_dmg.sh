@@ -5,10 +5,10 @@
 
 set -e
 
-APP_NAME="ChristmasBuddy"
+APP_NAME="ChristmasDesktopBuddy"
 APP_BUNDLE="$APP_NAME.app"
-DMG_NAME="ChristmasBuddy-v1.1.0"
-VOLUME_NAME="Christmas Buddy"
+DMG_NAME="ChristmasDesktopBuddy-v1.1.0"
+VOLUME_NAME="Christmas Desktop Buddy"
 
 echo "🎄 Creating distributable DMG..."
 echo "================================"
@@ -35,10 +35,10 @@ ln -s /Applications dmg_temp/Applications
 
 # README 추가 (중요한 설치 안내)
 cat > "dmg_temp/⚠️ 설치방법 (먼저 읽어주세요).txt" << 'EOF'
-🎄 Christmas Buddy v1.1.0 설치 방법
+🎄 Christmas Desktop Buddy v1.1.0 설치 방법
 =====================================
 
-1️⃣ ChristmasBuddy.app을 Applications 폴더로 드래그
+1️⃣ ChristmasDesktopBuddy.app을 Applications 폴더로 드래그
 
 2️⃣ Applications 폴더에서 앱을 찾아서:
    👉 앱을 "우클릭" (또는 Control + 클릭)
