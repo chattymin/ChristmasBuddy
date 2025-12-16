@@ -1,0 +1,30 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pixel art Christmas gift box - more angular -->
+  <!-- Box body (red) - sharp edges -->
+  <rect x="8" y="18" width="32" height="26" fill="#DC143C"/>
+
+  <!-- Box darker bottom for depth -->
+  <rect x="8" y="38" width="32" height="6" fill="#B01030"/>
+
+  <!-- Vertical ribbon (gold) -->
+  <rect x="20" y="18" width="8" height="26" fill="#FFD700"/>
+
+  <!-- Horizontal ribbon (gold) -->
+  <rect x="8" y="26" width="32" height="8" fill="#FFD700"/>
+
+  <!-- Ribbon bow (top) - angular style -->
+  <!-- Bow center knot -->
+  <rect x="20" y="10" width="8" height="8" fill="#FFD700"/>
+
+  <!-- Left bow loop -->
+  <rect x="10" y="10" width="8" height="4" fill="#FFD700"/>
+  <rect x="10" y="14" width="10" height="4" fill="#FFD700"/>
+
+  <!-- Right bow loop -->
+  <rect x="30" y="10" width="8" height="4" fill="#FFD700"/>
+  <rect x="28" y="14" width="10" height="4" fill="#FFD700"/>
+
+  <!-- Bow ribbon tails (angular) -->
+  <rect x="16" y="6" width="4" height="4" fill="#FFD700"/>
+  <rect x="28" y="6" width="4" height="4" fill="#FFD700"/>
+</svg>

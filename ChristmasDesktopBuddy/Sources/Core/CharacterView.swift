@@ -50,6 +50,7 @@ struct CharacterView: View {
             return nil
         }
 
+        print("✅ Found SVG at: \(url.path)")
         return try? Data(contentsOf: url)
     }
 

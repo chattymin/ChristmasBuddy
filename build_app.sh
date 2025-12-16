@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# Christmas Buddy - App Bundle Builder
+# Christmas Desktop Buddy - App Bundle Builder
 # 이 스크립트는 .app 번들을 생성하고 배포 가능한 형태로 만듭니다
 
 set -e
 
-APP_NAME="ChristmasBuddy"
+APP_NAME="ChristmasDesktopBuddy"
 BUILD_DIR=".build/release"
 APP_BUNDLE="$APP_NAME.app"
 CONTENTS="$APP_BUNDLE/Contents"
 MACOS="$CONTENTS/MacOS"
 RESOURCES="$CONTENTS/Resources"
 
-echo "🎄 Christmas Buddy - App Builder"
-echo "================================="
+echo "🎄 Christmas Desktop Buddy - App Builder"
+echo "========================================"
 
 # 1. Release 모드로 빌드
 echo "📦 Step 1: Building in release mode..."
@@ -37,12 +37,12 @@ chmod +x "$MACOS/$APP_NAME"
 
 # 5. Info.plist 복사
 echo "📄 Step 4: Copying Info.plist..."
-cp "ChristmasBuddy/Supporting/Info.plist" "$CONTENTS/"
+cp "ChristmasDesktopBuddy/Supporting/Info.plist" "$CONTENTS/"
 
 # 6. 리소스 번들 복사
 echo "🎨 Step 5: Copying resources..."
-if [ -d "$BUILD_DIR/ChristmasBuddy_ChristmasBuddy.bundle" ]; then
-    cp -R "$BUILD_DIR/ChristmasBuddy_ChristmasBuddy.bundle" "$RESOURCES/"
+if [ -d "$BUILD_DIR/ChristmasDesktopBuddy_ChristmasDesktopBuddy.bundle" ]; then
+    cp -R "$BUILD_DIR/ChristmasDesktopBuddy_ChristmasDesktopBuddy.bundle" "$RESOURCES/"
 fi
 
 # 7. 아이콘 설정 (있는 경우)

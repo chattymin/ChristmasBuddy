@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var menuBarImages: [NSImage] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        print("🎄 Christmas Buddy 시작!")
+        print("🎄 Christmas Desktop Buddy 시작!")
 
         // 상자 매니저 생성
         boxManager = BoxManager()
@@ -179,7 +179,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 앱 정보 (클릭 시 웹사이트로 이동)
         menu.addItem(
             NSMenuItem(
-                title: "Christmas Buddy v1.1.0",
+                title: "Christmas Desktop Buddy v1.0.0",
                 action: #selector(openWebsite),
                 keyEquivalent: ""
             )
@@ -234,11 +234,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             boxWindows.forEach { $0.makeKeyAndOrderFront(nil) }
             scatterBoxesMenuItem?.isEnabled = true
             randomGreetingMenuItem?.isEnabled = true
-            snowMenuItem?.isEnabled = true
-            // 눈 효과가 켜져있으면 다시 표시
-            if isSnowEnabled {
-                snowManager?.showSnow()
-            }
             print("👀 캐릭터와 상자 모두 표시")
 
         case .characterOnly:
@@ -247,11 +242,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             boxWindows.forEach { $0.orderOut(nil) }
             scatterBoxesMenuItem?.isEnabled = false
             randomGreetingMenuItem?.isEnabled = true
-            snowMenuItem?.isEnabled = true
-            // 눈 효과가 켜져있으면 다시 표시
-            if isSnowEnabled {
-                snowManager?.showSnow()
-            }
             print("👤 캐릭터만 표시")
 
         case .hidden:
@@ -260,11 +250,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             boxWindows.forEach { $0.orderOut(nil) }
             scatterBoxesMenuItem?.isEnabled = false
             randomGreetingMenuItem?.isEnabled = false
-            snowMenuItem?.isEnabled = false
-            // 눈 효과도 숨김
-            if isSnowEnabled {
-                snowManager?.hideSnow()
-            }
             print("👻 모두 숨김")
         }
     }
