@@ -87,28 +87,75 @@
             margin-bottom: 30px;
         }
 
-        /* 다운로드 버튼 */
-        .download-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #c41e3a, #a01830);
-            color: white;
-            padding: 18px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.2em;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.4);
-            transition: all 0.3s ease;
-            border: 2px solid #ff6b6b;
+        /* Homebrew 설치 박스 */
+        .install-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 15px;
+            padding: 25px 30px;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.6);
+        .install-box-title {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-line {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            font-size: 0.95em;
+        }
+
+        .terminal-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .terminal-prompt {
+            color: #4ade80;
+            margin-right: 10px;
+            user-select: none;
+        }
+
+        .terminal-command {
+            flex: 1;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.2s ease;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .copy-btn.copied {
+            background: #4ade80;
+            color: #000;
         }
 
         .download-info {
-            margin-top: 15px;
+            margin-top: 20px;
             font-size: 0.9em;
             opacity: 0.8;
         }
@@ -303,9 +350,21 @@
             <h1 class="title">Christmas Desktop Buddy</h1>
             <p class="subtitle">당신의 Mac 데스크탑에 크리스마스 친구를 초대하세요!</p>
 
-            <a href="https://github.com/chattymin/ChristmasBuddy/releases/download/v1.1.0/ChristmasDesktopBuddy-v1.1.0.dmg" class="download-btn">
-                 다운로드 v1.1.0
-            </a>
+            <div class="install-box">
+                <div class="install-box-title">
+                    <span>🍺</span> Homebrew로 설치하기
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-command">brew tap chattymin/christmasbuddy</span>
+                    <button class="copy-btn" onclick="copyCommand(this, 'brew tap chattymin/christmasbuddy')">복사</button>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-command">brew install --cask christmas-buddy</span>
+                    <button class="copy-btn" onclick="copyCommand(this, 'brew install --cask christmas-buddy')">복사</button>
+                </div>
+            </div>
             <p class="download-info">macOS 13.0 이상 지원 | Apple Silicon & Intel</p>
         </header>
 
@@ -379,23 +438,17 @@
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        위의 다운로드 버튼을 클릭하여 DMG 파일을 다운로드하세요
+                        터미널을 열고 위의 Homebrew 명령어를 순서대로 실행하세요
                     </div>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        DMG 파일을 열고 앱을 Applications 폴더로 드래그하세요
+                        설치가 완료되면 Applications 폴더에서 앱을 실행하세요
                     </div>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <div class="step-content">
-                        앱을 <strong>우클릭</strong> → <strong>"열기"</strong> 선택 → 경고창에서 <strong>"열기"</strong> 클릭
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
                     <div class="step-content">
                         메뉴바의 🎄 아이콘으로 캐릭터 변경 및 설정을 조절하세요
                     </div>
@@ -404,7 +457,7 @@
 
             <div class="requirements">
                 <h3>시스템 요구사항</h3>
-                <p>macOS 13.0 (Ventura) 이상</p>
+                <p>macOS 13.0 (Ventura) 이상 | Homebrew 필요</p>
             </div>
         </section>
 
@@ -437,6 +490,19 @@
         }
 
         createSnowflakes();
+
+        // 명령어 복사 기능
+        function copyCommand(btn, command) {
+            navigator.clipboard.writeText(command).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '완료!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 1500);
+            });
+        }
     </script>
 </body>
 </html>
