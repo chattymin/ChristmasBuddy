@@ -38,6 +38,19 @@ cat > "dmg_temp/⚠️ 설치방법 (먼저 읽어주세요).txt" << 'EOF'
 🎄 Christmas Desktop Buddy v1.1.0 설치 방법
 =====================================
 
+🍺 Homebrew로 설치하기 (권장)
+-------------------------------------
+터미널에서 아래 명령어를 실행하세요:
+
+brew tap chattymin/christmasbuddy && brew install --cask christmas-buddy
+
+✅ Homebrew로 설치하면 보안 경고 없이
+   바로 실행할 수 있습니다!
+
+=====================================
+
+📦 DMG로 직접 설치하기
+-------------------------------------
 1️⃣ ChristmasDesktopBuddy.app을 Applications 폴더로 드래그
 
 2️⃣ Applications 폴더에서 앱을 찾아서:
@@ -47,9 +60,6 @@ cat > "dmg_temp/⚠️ 설치방법 (먼저 읽어주세요).txt" << 'EOF'
 
 ⚠️ 일반 더블클릭으로는 열리지 않습니다!
    반드시 우클릭 → 열기로 실행해주세요.
-
-💡 한 번만 이렇게 열면 그 다음부터는
-   일반 더블클릭으로도 실행됩니다!
 
 =====================================
 GitHub: https://github.com/chattymin/ChristmasBuddy
