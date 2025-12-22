@@ -85,6 +85,59 @@ class CharacterWindow: NSWindow {
         setupContent()
     }
 
+    /// 화면 변경 시 캐릭터 위치 재조정
+    func handleScreenChange() {
+        guard let screen = NSScreen.main else { return }
+        let screenFrame = screen.visibleFrame
+        let currentPosition = self.frame.origin
+
+        // 새로운 홈 위치 계산
+        let newHomePosition = CGPoint(
+            x: screenFrame.minX - 20,
+            y: screenFrame.minY - 70
+        )
+
+        // 캐릭터가 화면 밖에 있는지 확인
+        let windowWidth = self.frame.width
+        let windowHeight = self.frame.height
+        let isOutOfScreen = currentPosition.x + windowWidth < screenFrame.minX ||
+                           currentPosition.x > screenFrame.maxX ||
+                           currentPosition.y + windowHeight < screenFrame.minY ||
+                           currentPosition.y > screenFrame.maxY
+
+        if isOutOfScreen {
+            // 화면 밖에 있으면 홈 위치로 이동
+            print("🎅 캐릭터가 화면 밖에 있어 홈 위치로 이동: \(currentPosition) → \(newHomePosition)")
+            self.setFrameOrigin(newHomePosition)
+        } else {
+            // 화면 내에 있으면 범위 내로 조정
+            var adjustedX = currentPosition.x
+            var adjustedY = currentPosition.y
+
+            // 화면 범위 내로 조정 (약간의 여백 허용)
+            let margin: CGFloat = 50
+            adjustedX = max(screenFrame.minX - windowWidth + margin, min(screenFrame.maxX - margin, adjustedX))
+            adjustedY = max(screenFrame.minY - windowHeight + margin, min(screenFrame.maxY - margin, adjustedY))
+
+            if adjustedX != currentPosition.x || adjustedY != currentPosition.y {
+                print("🎅 캐릭터 위치 조정: \(currentPosition) → (\(adjustedX), \(adjustedY))")
+                self.setFrameOrigin(CGPoint(x: adjustedX, y: adjustedY))
+            }
+        }
+    }
+
+    /// 홈 위치로 이동
+    func moveToHomePosition() {
+        guard let screen = NSScreen.main else { return }
+        let screenFrame = screen.visibleFrame
+        let homePosition = CGPoint(
+            x: screenFrame.minX - 20,
+            y: screenFrame.minY - 70
+        )
+        self.setFrameOrigin(homePosition)
+        print("🏠 캐릭터를 홈 위치로 이동: \(homePosition)")
+    }
+
     /// 화면 제약 완전히 해제 - 메뉴바 위로도 이동 가능
     override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
         return frameRect // 제약 없이 그대로 반환
