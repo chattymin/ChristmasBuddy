@@ -1,5 +1,5 @@
 cask "christmas-buddy" do
-  version "1.1.0"
+  version "1.1.1"
   sha256 :no_check
 
   url "https://github.com/chattymin/ChristmasBuddy/releases/download/v#{version}/ChristmasDesktopBuddy-v#{version}.dmg"

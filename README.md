@@ -48,6 +48,7 @@
 | 🎭 **Multiple Characters** | Choose between Snowman, Santa, and Rudolph |
 | 💭 **Random Greetings** | Character randomly says hello every 15-30 minutes |
 | 🌨️ **Snow Effect** | Beautiful snow falling effect across ALL connected monitors |
+| 🖥️ **Multi-Monitor Support** | Automatically adapts when displays are connected/disconnected or resolution changes |
 
 ## 📥 Download & Installation
 
