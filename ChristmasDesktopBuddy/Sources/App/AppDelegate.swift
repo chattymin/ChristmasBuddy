@@ -22,7 +22,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // 눈 효과
     private var snowManager: SnowWindowManager?
-    private var isSnowEnabled = false
 
     // 메뉴바 아이콘 애니메이션
     private var menuBarAnimationTimer: Timer?
@@ -48,8 +47,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 초기 visibility 상태 적용
         updateVisibility()
 
+        // 화면 변경 감지 설정
+        setupScreenChangeHandler()
+
         // Dock 아이콘 숨기기 (옵션)
         NSApp.setActivationPolicy(.accessory)
+    }
+
+    /// 화면 변경 핸들러 설정
+    private func setupScreenChangeHandler() {
+        ScreenChangeManager.shared.onScreenChange = { [weak self] in
+            self?.handleScreenChange()
+        }
+        print("🖥️ 화면 변경 감지 설정 완료")
+    }
+
+    /// 화면 변경 시 모든 컴포넌트 업데이트
+    private func handleScreenChange() {
+        print("🔄 화면 변경 감지 - 모든 컴포넌트 업데이트 시작")
+
+        // 캐릭터 위치 재조정
+        characterWindow?.handleScreenChange()
+
+        // 상자 위치 재조정
+        boxManager?.handleScreenChange()
+
+        // 눈 효과 재생성 (활성화된 경우)
+        snowManager?.handleScreenChange()
+
+        print("✅ 모든 컴포넌트 업데이트 완료")
     }
 
     /// 상자 윈도우들 생성
@@ -278,18 +304,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func toggleSnow() {
-        isSnowEnabled.toggle()
-        snowMenuItem?.state = isSnowEnabled ? .on : .off
+        if snowManager == nil {
+            snowManager = SnowWindowManager()
+        }
 
-        if isSnowEnabled {
-            // 눈 효과 시작
-            if snowManager == nil {
-                snowManager = SnowWindowManager()
-            }
-            snowManager?.showSnow()
-        } else {
+        if snowManager?.isEnabled == true {
             // 눈 효과 종료
             snowManager?.hideSnow()
+            snowMenuItem?.state = .off
+        } else {
+            // 눈 효과 시작
+            snowManager?.showSnow()
+            snowMenuItem?.state = .on
         }
     }
 
