@@ -7,7 +7,8 @@ set -e
 
 APP_NAME="ChristmasDesktopBuddy"
 APP_BUNDLE="$APP_NAME.app"
-DMG_NAME="ChristmasDesktopBuddy-v1.1.0"
+VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "ChristmasDesktopBuddy/Supporting/Info.plist")
+DMG_NAME="ChristmasDesktopBuddy-v${VERSION}"
 VOLUME_NAME="Christmas Desktop Buddy"
 
 echo "🎄 Creating distributable DMG..."
@@ -34,8 +35,8 @@ echo "🔗 Creating Applications symlink..."
 ln -s /Applications dmg_temp/Applications
 
 # README 추가 (중요한 설치 안내)
-cat > "dmg_temp/⚠️ 설치방법 (먼저 읽어주세요).txt" << 'EOF'
-🎄 Christmas Desktop Buddy v1.1.0 설치 방법
+cat > "dmg_temp/⚠️ 설치방법 (먼저 읽어주세요).txt" << EOF
+🎄 Christmas Desktop Buddy v${VERSION} 설치 방법
 =====================================
 
 🍺 Homebrew로 설치하기
