@@ -4,10 +4,12 @@ import AppKit
 /// 모든 모니터의 눈 효과를 관리하는 매니저
 class SnowWindowManager {
     private var snowWindows: [NSScreen: SnowWindow] = [:]
+    private var isSnowEnabled = false
 
     /// 모든 화면에 눈 효과 시작
     func showSnow() {
         hideSnow()
+        isSnowEnabled = true
 
         for screen in NSScreen.screens {
             let window = SnowWindow(screen: screen)
@@ -24,7 +26,35 @@ class SnowWindowManager {
             window.orderOut(nil)
         }
         snowWindows.removeAll()
+        isSnowEnabled = false
         print("❄️ 눈 효과 종료")
+    }
+
+    /// 화면 변경 시 눈 효과 재생성
+    func handleScreenChange() {
+        guard isSnowEnabled else { return }
+
+        print("❄️ 화면 변경으로 눈 효과 재생성")
+
+        // 기존 윈도우 모두 제거
+        for window in snowWindows.values {
+            window.orderOut(nil)
+        }
+        snowWindows.removeAll()
+
+        // 새로운 화면 구성에 맞게 재생성
+        for screen in NSScreen.screens {
+            let window = SnowWindow(screen: screen)
+            window.makeKeyAndOrderFront(nil)
+            snowWindows[screen] = window
+        }
+
+        print("❄️ 눈 효과 재생성 완료 - \(snowWindows.count)개 화면")
+    }
+
+    /// 눈 효과가 활성화되어 있는지 확인
+    var isEnabled: Bool {
+        return isSnowEnabled
     }
 }
 
