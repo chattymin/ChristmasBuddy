@@ -6,7 +6,7 @@ class BoxManager: ObservableObject {
     @Published var boxes: [Box] = []
     var boxWindows: [UUID: BoxWindow] = [:]
 
-    private let originalStackPosition: CGPoint
+    private var originalStackPosition: CGPoint
     private let boxSize: CGFloat = 48
     private let stackSpacing: CGFloat = 4
 
@@ -23,6 +23,60 @@ class BoxManager: ObservableObject {
         }
 
         createBoxes()
+    }
+
+    /// 화면 변경 시 상자 위치 재조정
+    func handleScreenChange() {
+        guard let screen = NSScreen.main else { return }
+        let screenFrame = screen.visibleFrame
+
+        // 새로운 스택 위치 계산
+        let newStackPosition = CGPoint(
+            x: screenFrame.maxX - boxSize - 20,
+            y: screenFrame.minY + 20
+        )
+
+        print("📦 상자 위치 재조정: \(originalStackPosition) → \(newStackPosition)")
+
+        // 이전 스택 위치와의 차이 계산
+        let deltaX = newStackPosition.x - originalStackPosition.x
+        let deltaY = newStackPosition.y - originalStackPosition.y
+
+        // 스택 위치 업데이트
+        originalStackPosition = newStackPosition
+
+        // 모든 상자 위치 재조정
+        for (index, box) in boxes.enumerated() {
+            let newPosition: CGPoint
+
+            if box.isInOriginalPosition {
+                // 원래 위치에 있던 상자는 새 스택 위치로
+                let yOffset = CGFloat(index) * (boxSize + stackSpacing)
+                newPosition = CGPoint(
+                    x: newStackPosition.x,
+                    y: newStackPosition.y + yOffset
+                )
+            } else {
+                // 흩어진 상자는 상대적 위치 유지 (화면 내 범위로 조정)
+                var adjustedX = box.position.x + deltaX
+                var adjustedY = box.position.y + deltaY
+
+                // 화면 범위 내로 조정
+                adjustedX = max(screenFrame.minX + 20, min(screenFrame.maxX - boxSize - 20, adjustedX))
+                adjustedY = max(screenFrame.minY + 20, min(screenFrame.maxY - boxSize - 20, adjustedY))
+
+                newPosition = CGPoint(x: adjustedX, y: adjustedY)
+            }
+
+            boxes[index].position = newPosition
+
+            // 윈도우도 이동
+            if let window = boxWindows[box.id] {
+                window.setFrameOrigin(newPosition)
+            }
+        }
+
+        print("📦 \(boxes.count)개 상자 위치 재조정 완료")
     }
 
     /// 랜덤 개수(5-8개)의 상자 생성
