@@ -6,9 +6,9 @@ class BoxManager: ObservableObject {
     @Published var boxes: [Box] = []
     var boxWindows: [UUID: BoxWindow] = [:]
 
-    private var originalStackPosition: CGPoint
-    private let boxSize: CGFloat = 48
-    private let stackSpacing: CGFloat = 4
+    private(set) var originalStackPosition: CGPoint
+    let boxSize: CGFloat = 48
+    let stackSpacing: CGFloat = 4
 
     init() {
         // 화면 오른쪽 하단에 상자 쌓기
@@ -131,6 +131,18 @@ class BoxManager: ObservableObject {
         }
 
         return isOriginal
+    }
+
+    /// 특정 상자의 원래 스택 위치 가져오기
+    func getOriginalPosition(for boxId: UUID) -> CGPoint {
+        if let index = boxes.firstIndex(where: { $0.id == boxId }) {
+            let yOffset = CGFloat(index) * (boxSize + stackSpacing)
+            return CGPoint(
+                x: originalStackPosition.x,
+                y: originalStackPosition.y + yOffset
+            )
+        }
+        return originalStackPosition
     }
 
     /// 상자를 원래 위치로 되돌리기

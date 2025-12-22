@@ -489,23 +489,13 @@ struct CharacterWindowContent: View {
                                 print("🔄 다음 상자로 이동!")
                                 collectBox(nextBox, characterWindow: characterWindow, manager: manager)
                             } else {
-                                // 모든 상자 정리 완료 - 좌측 하단으로 이동
+                                // 모든 상자 정리 완료 - 상자가 있는 화면의 좌측 하단으로 이동
                                 print("🏠 모든 상자 정리 완료! 좌측 하단으로 이동 중...")
-                                if let screen = NSScreen.main {
-                                    let screenFrame = screen.visibleFrame
-                                    // 캐릭터가 화면 왼쪽 아래 구석에 오도록 윈도우 위치 조정
-                                    // 캐릭터가 잘리지 않도록 적절한 offset 사용
-                                    let homePosition = CGPoint(
-                                        x: screenFrame.minX - 20,
-                                        y: screenFrame.minY - 70
-                                    )
-                                    moveCharacterTo(position: homePosition, characterWindow: characterWindow) {
-                                        print("✅ 상자 수집 완료!")
-                                        isCollectingBox = false
-                                        facingLeft = false  // 오른쪽을 바라보도록
-                                    }
-                                } else {
+                                let homePosition = getHomePosition(for: manager)
+                                moveCharacterTo(position: homePosition, characterWindow: characterWindow) {
+                                    print("✅ 상자 수집 완료!")
                                     isCollectingBox = false
+                                    facingLeft = false  // 오른쪽을 바라보도록
                                 }
                             }
                         }
@@ -515,25 +505,38 @@ struct CharacterWindowContent: View {
         }
     }
 
-    /// 상자의 원래 스택 위치 계산
+    /// 상자의 원래 스택 위치 계산 (BoxManager의 위치 사용)
     private func getOriginalStackPosition(for boxId: UUID, in manager: BoxManager) -> CGPoint {
-        if let index = manager.boxes.firstIndex(where: { $0.id == boxId }) {
-            let boxSize: CGFloat = 48
-            let stackSpacing: CGFloat = 4
-            if let screen = NSScreen.main {
-                let screenFrame = screen.visibleFrame
-                let originalStackPosition = CGPoint(
-                    x: screenFrame.maxX - boxSize - 20,
-                    y: screenFrame.minY + 20
-                )
-                let yOffset = CGFloat(index) * (boxSize + stackSpacing)
+        return manager.getOriginalPosition(for: boxId)
+    }
+
+    /// 상자가 있는 화면의 홈 위치 계산
+    private func getHomePosition(for manager: BoxManager) -> CGPoint {
+        let stackPosition = manager.originalStackPosition
+
+        // 상자가 있는 화면 찾기
+        for screen in NSScreen.screens {
+            let screenFrame = screen.visibleFrame
+            if screenFrame.contains(stackPosition) ||
+               (stackPosition.x >= screenFrame.minX && stackPosition.x <= screenFrame.maxX) {
+                // 해당 화면의 좌측 하단 위치 반환
                 return CGPoint(
-                    x: originalStackPosition.x,
-                    y: originalStackPosition.y + yOffset
+                    x: screenFrame.minX - 20,
+                    y: screenFrame.minY - 70
                 )
             }
         }
-        return CGPoint(x: 100, y: 100)
+
+        // 못 찾으면 메인 화면 사용
+        if let screen = NSScreen.main {
+            let screenFrame = screen.visibleFrame
+            return CGPoint(
+                x: screenFrame.minX - 20,
+                y: screenFrame.minY - 70
+            )
+        }
+
+        return CGPoint(x: -20, y: -70)
     }
 
     /// 캐릭터를 특정 위치로 이동 (프레임 단위로 부드럽게)
