@@ -40,9 +40,11 @@ echo "📄 Step 4: Copying Info.plist..."
 cp "ChristmasDesktopBuddy/Supporting/Info.plist" "$CONTENTS/"
 
 # 6. 리소스 번들 복사
+# Note: Swift Package Manager의 Bundle.module은 Bundle.main.bundleURL에서 직접 리소스 번들을 찾습니다.
+# Bundle.main.bundleURL은 .app 번들 자체를 가리키므로, 리소스 번들을 .app 루트에 복사해야 합니다.
 echo "🎨 Step 5: Copying resources..."
 if [ -d "$BUILD_DIR/ChristmasDesktopBuddy_ChristmasDesktopBuddy.bundle" ]; then
-    cp -R "$BUILD_DIR/ChristmasDesktopBuddy_ChristmasDesktopBuddy.bundle" "$RESOURCES/"
+    cp -R "$BUILD_DIR/ChristmasDesktopBuddy_ChristmasDesktopBuddy.bundle" "$APP_BUNDLE/"
 fi
 
 # 7. 아이콘 설정 (있는 경우)
