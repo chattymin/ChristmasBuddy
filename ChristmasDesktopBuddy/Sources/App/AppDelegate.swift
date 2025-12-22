@@ -203,9 +203,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
 
         // 앱 정보 (클릭 시 웹사이트로 이동)
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         menu.addItem(
             NSMenuItem(
-                title: "Christmas Desktop Buddy v1.1.0",
+                title: "Christmas Desktop Buddy v\(version)",
                 action: #selector(openWebsite),
                 keyEquivalent: ""
             )
